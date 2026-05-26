@@ -8,11 +8,15 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>AACS LFPR · The Network — A Working Demonstration | Austin M. Kluis, MD</title>
-<meta name="description" content="The AACS Longitudinal Fellowship & Practice Registry — a public-facing demonstration of the network, the people, the literature, and the impact." />
-<!-- Open Graph for link-sharing previews -->
-<meta property="og:title" content="AACS LFPR — A Working Demonstration" />
-<meta property="og:description" content="Interactive single-page demonstration of the AACS Longitudinal Fellowship & Practice Registry — every program, every fellow, every alumnus." />
+<title>[DEMONSTRATION ONLY · SIMULATED DATA] AACS LFPR Mock-up — Not for Citation</title>
+<meta name="description" content="DEMONSTRATION ONLY. Working mock-up of the proposed AACS Longitudinal Fellowship & Practice Registry. All data is simulated and the mock manuscript is not a real publication. Confidential pre-decisional draft." />
+<!-- Block search engine indexing — this artifact is not for public consumption -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+<meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet" />
+<!-- Open Graph for link-sharing previews — explicitly labeled DEMO -->
+<meta property="og:title" content="[DEMONSTRATION ONLY] AACS LFPR Mock-up — Simulated Data" />
+<meta property="og:description" content="Pre-decisional working mock-up. All data simulated; mock manuscript is not a real publication." />
 <meta property="og:type" content="website" />
 
 <!-- Fonts -->
@@ -324,6 +328,155 @@ section.bay.dark .kpi .v{color:#FCFAF3}
 .kpi .sub{font-size:.74rem;color:var(--ink-mute);margin-top:.3rem;line-height:1.4}
 
 /* ========================================================
+   DEMONSTRATION-ONLY WATERMARKING  ·  HIGH PRIORITY VISUAL
+   ======================================================== */
+
+/* Sticky red banner — TOP OF EVERY PAGE, ALL VIEWS, ALL VIEWPORTS */
+.demo-banner{
+  position:sticky; top:0; z-index:200;
+  background:linear-gradient(90deg, #9B2A2A 0%, #B14B2A 40%, #9B2A2A 100%);
+  color:#FFF6E8;
+  text-align:center;
+  padding:.6rem 1rem;
+  font-family:'Inter',sans-serif;
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  line-height:1.4;
+  border-bottom:2px solid #6B1B1B;
+  box-shadow:0 2px 12px rgba(155,42,42,.35);
+}
+.demo-banner strong{color:#FFD66B;letter-spacing:.16em}
+.demo-banner .pulse{display:inline-block;width:9px;height:9px;border-radius:50%;background:#FFD66B;margin-right:.5rem;vertical-align:middle;animation:pulseDot 1.6s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{opacity:.45;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
+
+@media (max-width:880px){
+  .demo-banner{font-size:.66rem;letter-spacing:.08em;padding:.5rem .8rem}
+  .demo-banner .long{display:none}
+  .demo-banner .short{display:inline}
+}
+@media (min-width:881px){
+  .demo-banner .short{display:none}
+  .demo-banner .long{display:inline}
+}
+
+/* Push the topnav below the banner */
+nav.topnav{top:auto}
+
+/* Diagonal repeating watermark behind every simulated zone */
+.sim-zone{
+  position:relative;
+  background:
+    linear-gradient(135deg, rgba(200,166,100,.10) 25%, transparent 25%, transparent 50%, rgba(200,166,100,.10) 50%, rgba(200,166,100,.10) 75%, transparent 75%, transparent),
+    linear-gradient(180deg, #FFFCF1 0%, #FBF6E8 100%);
+  background-size: 22px 22px, 100% 100%;
+}
+
+/* Mock-paper huge diagonal "MOCK · NOT FOR CITATION" overlay */
+.paper{position:relative;overflow:hidden}
+.paper::before{
+  content:"MOCK · NOT REAL · DEMONSTRATION · SIMULATED · MOCK · NOT REAL · DEMONSTRATION · SIMULATED · MOCK · NOT REAL · DEMONSTRATION · SIMULATED · MOCK · NOT REAL · DEMONSTRATION · SIMULATED · MOCK · NOT REAL · DEMONSTRATION · SIMULATED · MOCK · NOT REAL · DEMONSTRATION · SIMULATED · MOCK · NOT REAL · DEMONSTRATION · SIMULATED · MOCK · NOT REAL · DEMONSTRATION · SIMULATED · MOCK · NOT REAL · DEMONSTRATION · SIMULATED · MOCK · NOT REAL · DEMONSTRATION · SIMULATED";
+  position:absolute; top:0; left:-15%; width:140%; height:100%;
+  font-family:'Inter',sans-serif; font-weight:900; font-size:48px;
+  color:rgba(155,42,42,.07);
+  letter-spacing:.3em; word-spacing:.5em;
+  transform:rotate(-22deg);
+  pointer-events:none; user-select:none;
+  white-space:normal; overflow:hidden;
+  line-height:1.55;
+  z-index:0;
+}
+.paper > *{position:relative;z-index:1}
+
+/* Big red stamp on the paper hero */
+.paper .demo-stamp-huge{
+  display:block; background:#9B2A2A; color:#FFF6E8;
+  font-family:'Inter',sans-serif; font-weight:800;
+  letter-spacing:.2em; text-transform:uppercase;
+  text-align:center; padding:.8rem 1rem;
+  font-size:1.05rem;
+  border-radius:6px;
+  margin:0 0 1.2rem 0;
+  border:2px solid #6B1B1B;
+  box-shadow:0 4px 14px rgba(155,42,42,.25);
+}
+.paper .demo-stamp-huge small{display:block;font-size:.72rem;font-weight:600;letter-spacing:.14em;opacity:.85;margin-top:.25rem}
+
+/* Watermark on chart panels — "SIMULATED" corner stamp */
+.chart-host{position:relative}
+.chart-host.sim::after{
+  content:"SIMULATED";
+  position:absolute; top:.6rem; right:.7rem;
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  font-weight:700; letter-spacing:.15em;
+  background:#C8A664; color:#0A1F44;
+  padding:.18rem .55rem; border-radius:3px;
+  pointer-events:none;
+}
+
+/* First-visit acknowledgment modal */
+.demo-modal-backdrop{
+  position:fixed; inset:0; z-index:1000;
+  background:rgba(8,25,58,.92);
+  display:flex; align-items:center; justify-content:center;
+  padding:1.5rem;
+  backdrop-filter:blur(4px);
+}
+.demo-modal{
+  max-width:560px; width:100%;
+  background:#fff; border-radius:10px;
+  padding:1.8rem 1.8rem 1.6rem;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+  border-top:6px solid #9B2A2A;
+  font-family:'Inter',sans-serif;
+}
+.demo-modal h2{
+  font-family:'Inter',sans-serif; font-weight:800;
+  font-size:1.05rem; letter-spacing:.08em;
+  text-transform:uppercase; color:#9B2A2A;
+  margin:0 0 .9rem;
+}
+.demo-modal h2::before{
+  content:"⚠"; margin-right:.5rem; color:#D08E29;
+}
+.demo-modal p{
+  font-size:.92rem; line-height:1.55; color:#0A1F44;
+  margin:0 0 .65rem;
+}
+.demo-modal p strong{color:#9B2A2A}
+.demo-modal ul{
+  font-size:.86rem; line-height:1.5; color:#14306B;
+  padding-left:1.1rem; margin:.7rem 0 1rem;
+}
+.demo-modal ul li{margin-bottom:.35rem}
+.demo-modal .ack-row{
+  display:flex; gap:.7rem; align-items:center;
+  margin-top:1.1rem;
+}
+.demo-modal .ack-btn{
+  flex:1; background:#0A1F44; color:#FCFAF3;
+  font-weight:700; font-size:.85rem; letter-spacing:.05em;
+  padding:.8rem 1rem; border:0; border-radius:6px;
+  cursor:pointer; text-transform:uppercase;
+}
+.demo-modal .ack-btn:hover{background:#1E5BAE}
+.demo-modal .ack-cancel{
+  background:transparent; color:#9B2A2A;
+  border:1px solid #9B2A2A; flex:0 0 auto;
+  padding:.8rem 1.2rem;
+}
+.demo-modal .meta{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#4A5B7E;margin-top:.9rem;letter-spacing:.04em}
+
+/* For print — keep the watermarks on paper too */
+@media print{
+  .demo-banner{position:static;page-break-after:avoid}
+  .paper::before{color:rgba(155,42,42,.15)} /* still visible when printed */
+  .demo-modal-backdrop{display:none !important}
+}
+
+
+/* ========================================================
    MOBILE OPTIMIZATION  ·  ≤ 880px
    ======================================================== */
 
@@ -545,6 +698,31 @@ section.bay.dark .kpi .v{color:#FCFAF3}
 </style>
 </head>
 <body>
+
+<!-- ========== DEMONSTRATION BANNER · ALWAYS VISIBLE ========== -->
+<div class="demo-banner" role="alert" aria-live="polite">
+  <span class="pulse"></span>
+  <span class="long"><strong>Demonstration only</strong> &nbsp;·&nbsp; Simulated data &nbsp;·&nbsp; Mock manuscript is NOT a real publication &nbsp;·&nbsp; Confidential pre-decisional working draft &nbsp;·&nbsp; Do not cite, distribute, or screenshot out of context</span>
+  <span class="short"><strong>DEMO ONLY</strong> &nbsp;·&nbsp; SIMULATED DATA &nbsp;·&nbsp; NOT FOR CITATION</span>
+</div>
+
+<!-- ========== FIRST-VISIT ACKNOWLEDGMENT MODAL ========== -->
+<div class="demo-modal-backdrop" id="demo-ack-modal" role="dialog" aria-modal="true" aria-labelledby="demo-ack-title">
+  <div class="demo-modal">
+    <h2 id="demo-ack-title">Demonstration Artifact &mdash; Please Read Before Proceeding</h2>
+    <p>You are about to view a <strong>pre-decisional working mock-up</strong> of the proposed AACS Longitudinal Fellowship &amp; Practice Registry (LFPR). The artifact you are about to see contains:</p>
+    <ul>
+      <li><strong>Factually-sourced material</strong> &mdash; the program-director directory, public photographs, fellowship structure, and published case-log literature.</li>
+      <li><strong>Simulated/representative data</strong> &mdash; every chart and table inside a gold-dashed &ldquo;SIMULATED ZONE&rdquo; uses illustrative values to demonstrate the kind of analysis the registry will eventually produce. These numbers are not measured and are not findings.</li>
+      <li><strong>A mock manuscript</strong> on the &ldquo;Mock Paper&rdquo; tab. It is a methodological exemplar &mdash; <strong>NOT a real publication, NOT submitted to any journal, and NOT cleared by its listed authors.</strong> It is published nowhere.</li>
+    </ul>
+    <p>By proceeding you acknowledge that this artifact is for internal review only, is not for citation, is not a real publication, and will not be distributed or screenshotted out of context.</p>
+    <p class="meta">AACS LFPR · Pre-decisional working draft · Prepared by Austin M. Kluis, MD &mdash; LFPR Registry Director (proposed)</p>
+    <div class="ack-row">
+      <button class="ack-btn" id="demo-ack-btn">I Understand &mdash; Proceed</button>
+    </div>
+  </div>
+</div>
 
 <!-- ========== TOP NAV ========== -->
 <nav class="topnav">
@@ -947,37 +1125,37 @@ section.bay.dark .kpi .v{color:#FCFAF3}
 
       <div class="sim-zone">
         <div class="grid-2">
-          <div class="chart-host">
+          <div class="chart-host sim">
             <h4>1) Cosmetic-procedure outcomes parity &mdash; ABPS vs ABCS</h4>
             <div class="ch-meta">30-day major complication rates by index procedure &middot; <span class="dbadge sim" style="vertical-align:middle">SIMULATED</span></div>
             <div class="chart-canvas-wrap"><canvas id="cvp-outcomes"></canvas></div>
             <p class="footnote">Simulated within published ASPS TOPS / CosmetAssure ranges. Hypothesis: <strong>complication parity</strong> on common cosmetic procedures across board pathway. The LFPR provides the AACS&rsquo;s side of the comparison for the first time.</p>
           </div>
-          <div class="chart-host">
+          <div class="chart-host sim">
             <h4>2) Case mix per trainee year &mdash; cosmetic exposure</h4>
             <div class="ch-meta">AACS 1-yr fellow vs ABPS 6-yr integrated trainee &middot; <span class="dbadge sim" style="vertical-align:middle">SIMULATED</span></div>
             <div class="chart-canvas-wrap"><canvas id="cvp-casemix"></canvas></div>
             <p class="footnote">AACS fellow median across 12 index procedures vs ACGME-PRS averages. AACS fellows complete higher per-year cosmetic volume; ABPS trainees have far greater complex-reconstruction exposure over 6 years.</p>
           </div>
-          <div class="chart-host">
+          <div class="chart-host sim">
             <h4>3) Where graduates land &mdash; practice model 5-year post-fellowship</h4>
             <div class="ch-meta">Solo / partner / employed / academic / locum &middot; <span class="dbadge sim" style="vertical-align:middle">SIMULATED</span></div>
             <div class="chart-canvas-wrap"><canvas id="cvp-placement"></canvas></div>
             <p class="footnote">AACS-trained surgeons over-represented in solo and partner-owned practice; ABPS-trained over-represented in academic and hospital-employed roles &mdash; consistent with the operating context each curriculum emphasizes.</p>
           </div>
-          <div class="chart-host">
+          <div class="chart-host sim">
             <h4>4) Geographic dispersion &mdash; alumni density</h4>
             <div class="ch-meta">Coverage of underserved MSAs after training &middot; <span class="dbadge sim" style="vertical-align:middle">SIMULATED</span></div>
             <div class="chart-canvas-wrap"><canvas id="cvp-geo"></canvas></div>
             <p class="footnote">Hypothesis: AACS-trained graduates more frequently anchor mid-sized MSAs (Tier 2 / 3 cities) per HRSA MSA classification &mdash; an access-to-care signal the field has never quantified.</p>
           </div>
-          <div class="chart-host">
+          <div class="chart-host sim">
             <h4>5) Patient-satisfaction parity</h4>
             <div class="ch-meta">RealSelf-style aggregate &middot; <span class="dbadge sim" style="vertical-align:middle">SIMULATED</span></div>
             <div class="chart-canvas-wrap"><canvas id="cvp-satisfaction"></canvas></div>
             <p class="footnote">Aggregated patient satisfaction across procedure categories, by training pathway. Parity within ~3-5 percentage points across most categories. <em>This is the chart the AACS needs in front of every state medical board.</em></p>
           </div>
-          <div class="chart-host">
+          <div class="chart-host sim">
             <h4>6) Time to operative autonomy</h4>
             <div class="ch-meta">Months to first independent aesthetic case &middot; <span class="dbadge sim" style="vertical-align:middle">SIMULATED</span></div>
             <div class="chart-canvas-wrap"><canvas id="cvp-autonomy"></canvas></div>
@@ -1025,6 +1203,12 @@ section.bay.dark .kpi .v{color:#FCFAF3}
       <div class="paper-wrap">
         <div class="paper" style="position:relative">
           <div class="watermark">SIMULATED · MOCK MANUSCRIPT</div>
+
+          <div class="demo-stamp-huge">
+            ⚠ &nbsp; This is NOT a real publication
+            <small>Mock manuscript &middot; Simulated data &middot; Not submitted to any journal &middot; Not approved by listed authors &middot; Demonstration only</small>
+          </div>
+
           <span class="stamp sim">DRAFT · NOT SUBMITTED · v0.3</span> &nbsp;
           <span class="stamp" style="background:#fff;color:#0A1F44;border:1px solid #0A1F44">FOR INTERNAL CIRCULATION ONLY</span>
 
@@ -1811,6 +1995,29 @@ section.bay.dark .kpi .v{color:#FCFAF3}
 </footer>
 
 <script>
+/* =====================================================================
+   0) DEMONSTRATION ACKNOWLEDGMENT MODAL  (first visit per session)
+   ===================================================================== */
+(function demoAck(){
+  const m = document.getElementById('demo-ack-modal');
+  const btn = document.getElementById('demo-ack-btn');
+  if(!m || !btn) return;
+  // Use sessionStorage — re-prompts each new browser session
+  let acknowledged = false;
+  try { acknowledged = sessionStorage.getItem('lfpr-demo-ack') === '1'; } catch(e){}
+  if(acknowledged){
+    m.style.display = 'none';
+  } else {
+    // Disable body scroll while modal is open
+    document.documentElement.style.overflow = 'hidden';
+  }
+  btn.addEventListener('click', ()=>{
+    m.style.display = 'none';
+    document.documentElement.style.overflow = '';
+    try { sessionStorage.setItem('lfpr-demo-ack', '1'); } catch(e){}
+  });
+})();
+
 /* =====================================================================
    1) TAB / VIEW SWITCHING
    ===================================================================== */
