@@ -328,6 +328,180 @@ section.bay.dark .kpi .v{color:#FCFAF3}
 .kpi .sub{font-size:.74rem;color:var(--ink-mute);margin-top:.3rem;line-height:1.4}
 
 /* ========================================================
+   PAST PRESIDENTS TIMELINE GRID  ·  AACS chronological roster
+   ======================================================== */
+.pp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.6rem}
+.pp-card{background:#fff;border:1px solid var(--line);border-radius:7px;padding:.55rem .65rem;display:flex;gap:.55rem;align-items:center;transition:transform .15s,box-shadow .15s,border-color .15s}
+.pp-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-soft);border-color:var(--gold)}
+.pp-card.linked{border-left:3px solid var(--gold);background:linear-gradient(180deg,#FFFCF1 0%,#fff 100%)}
+.pp-av{width:42px;height:42px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--ink) 0%,var(--accent) 100%);color:#fff;display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:.92rem;overflow:hidden;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.pp-av img{width:100%;height:100%;object-fit:cover}
+.pp-info{flex:1;min-width:0}
+.pp-yr{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;color:var(--accent);letter-spacing:.05em;line-height:1}
+.pp-card.linked .pp-yr{color:#8A7028}
+.pp-nm{font-size:.78rem;font-weight:600;color:var(--ink);margin-top:.18rem;line-height:1.2}
+.pp-link{font-size:.6rem;font-family:'JetBrains Mono',monospace;color:#8A7028;letter-spacing:.05em;margin-top:.18rem;line-height:1.2}
+@media (max-width:880px){
+  .pp-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.45rem}
+  .pp-card{padding:.45rem .55rem;gap:.45rem}
+  .pp-av{width:36px;height:36px;font-size:.8rem}
+  .pp-nm{font-size:.72rem}
+}
+
+/* ========================================================
+   ANCESTRY GENEALOGY TREE (v6) · click-to-expand · d3.tree + zoom + overlay
+   ======================================================== */
+.anc-host{position:relative;background:radial-gradient(ellipse at center,#FBFAF5 0%,#F3EFE5 100%);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow-soft);height:900px}
+.anc-host svg{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+.anc-host svg:active{cursor:grabbing}
+.anc-hint{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(10,31,68,.88);color:#FCFAF3;padding:.35rem .8rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.06em;z-index:3;pointer-events:none;max-width:92%;text-align:center}
+.anc-controls{position:absolute;top:54px;right:14px;display:flex;flex-direction:column;gap:.3rem;z-index:3}
+.anc-controls button{background:#fff;border:1px solid var(--line);min-width:34px;height:34px;border-radius:6px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--ink-mute);box-shadow:var(--shadow-soft);transition:all .15s;display:grid;place-items:center;font-size:.95rem}
+.anc-controls button:hover{color:var(--ink);border-color:var(--accent)}
+.anc-controls button.wide{font-size:.62rem;letter-spacing:.06em;padding:0 .55rem;min-width:auto}
+.anc-legend{position:absolute;bottom:8px;left:14px;right:14px;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);border:1px solid var(--line);border-radius:6px;padding:.5rem .75rem;display:flex;flex-wrap:wrap;gap:.6rem .9rem;font-size:.65rem;color:var(--ink-mute);z-index:2;justify-content:center}
+.anc-dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:.32rem;vertical-align:middle}
+.anc-arrow{display:inline-block;width:24px;height:0;border-top:2px dashed #C8A664;margin-right:.35rem;vertical-align:middle;position:relative}
+.anc-arrow::after{content:"";position:absolute;right:-6px;top:-5px;border-left:7px solid #C8A664;border-top:4px solid transparent;border-bottom:4px solid transparent}
+@media (max-width:880px){
+  .anc-host{height:680px}
+  .anc-hint{font-size:.54rem;padding:.28rem .55rem;letter-spacing:.04em}
+  .anc-controls{top:46px;right:8px}
+  .anc-controls button{min-width:30px;height:30px;font-size:.85rem}
+  .anc-controls button.wide{font-size:.55rem;padding:0 .4rem}
+  .anc-legend{font-size:.58rem;gap:.4rem .55rem;padding:.4rem .55rem}
+}
+
+/* === Tree node visuals === */
+.anc-link{fill:none;stroke:#9AA7C2;stroke-opacity:.45;stroke-width:1.6}
+.anc-link.cat{stroke:#0A1F44;stroke-opacity:.55;stroke-width:2.4}
+.anc-link.subcat{stroke-opacity:.5;stroke-width:1.8}
+
+.anc-node{cursor:pointer}
+.anc-node circle.bg{stroke:#fff;stroke-width:2}
+.anc-node:hover circle.bg{stroke:#C8A664;stroke-width:3}
+.anc-node.collapsed circle.bg{stroke-dasharray:3 2}
+.anc-node text.lbl{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;fill:#0A1F44;pointer-events:none}
+.anc-node text.sub{font-family:'Inter',sans-serif;font-size:9px;fill:#4A5B7E;pointer-events:none}
+.anc-node text.tag{font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;fill:#8A7028;letter-spacing:.08em;pointer-events:none}
+
+/* Cross-branch overlay arrows */
+.anc-overlay{fill:none;stroke:#C8A664;stroke-width:1.8;stroke-dasharray:6 4;opacity:.7;pointer-events:none}
+.anc-overlay:hover{opacity:1}
+.anc-overlay-label{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;fill:#8A7028;letter-spacing:.06em;pointer-events:none}
+
+/* Node photo clip-path */
+.anc-node image.av{clip-path:url(#anc-clip-circle)}
+
+/* ========================================================
+   VERTICAL LINEAGE TREE (v5)  · swimlane by origin specialty (LEGACY)
+   ======================================================== */
+.vt-host{background:linear-gradient(180deg,#FBFAF5 0%,#F3EFE5 100%);border:1px solid var(--line);border-radius:10px;padding:1.6rem clamp(.8rem,2vw,1.6rem) 1.3rem;box-shadow:var(--shadow-soft);position:relative}
+.vt-trunk{display:flex;flex-direction:column;align-items:center}
+.vt-root{background:#0A1F44;color:#FCFAF3;padding:1.1rem 2rem;border-radius:14px;text-align:center;box-shadow:0 8px 24px rgba(10,31,68,.25);border:3px solid #C8A664;max-width:480px}
+.vt-root-title{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;letter-spacing:-.02em;line-height:1}
+.vt-root-sub{font-family:Inter,sans-serif;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.4rem;color:#C8A664;font-weight:600}
+.vt-root-meta{font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:#C7CFE0;margin-top:.5rem;line-height:1.35}
+.vt-divider{width:3px;height:46px;background:linear-gradient(180deg,#C8A664 0%,#9AA7C2 100%);margin:.6rem 0 0 0;position:relative}
+.vt-divider span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:#C8A664}
+
+.vt-swimlanes{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-top:.6rem}
+@media (max-width:1100px){.vt-swimlanes{grid-template-columns:repeat(2,1fr);gap:1rem}}
+@media (max-width:680px){.vt-swimlanes{grid-template-columns:1fr;gap:.8rem}}
+
+.vt-swim{background:#fff;border:1px solid var(--line);border-top:5px solid var(--ink);border-radius:10px;padding:1.1rem;display:flex;flex-direction:column;gap:.8rem}
+.vt-swim.surg{border-top-color:#1E5BAE}
+.vt-swim.dent{border-top-color:#9B5DE5}
+.vt-swim.derm{border-top-color:#0E9F8E}
+.vt-swim.dopath{border-top-color:#D08E29}
+.vt-swim-head{padding-bottom:.6rem;border-bottom:1px solid var(--line-soft)}
+.vt-swim-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--ink);line-height:1.1;letter-spacing:-.005em}
+.vt-swim-count{font-family:JetBrains Mono,monospace;font-size:.7rem;letter-spacing:.12em;color:var(--ink-mute);margin-top:.25rem;font-weight:600}
+.vt-swim-desc{font-size:.78rem;color:var(--ink-mute);margin-top:.4rem;line-height:1.4}
+
+.vt-subcat{margin-top:.4rem}
+.vt-subcat-head{font-family:Inter,sans-serif;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--accent);margin:.4rem 0 .5rem;padding:.25rem .5rem;background:rgba(30,91,174,.07);border-radius:3px;display:inline-block}
+.vt-swim.dent .vt-subcat-head{color:#7B40C8;background:rgba(155,93,229,.07)}
+.vt-swim.derm .vt-subcat-head{color:#0E9F8E;background:rgba(14,159,142,.07)}
+.vt-swim.dopath .vt-subcat-head{color:#A0691A;background:rgba(208,142,41,.07)}
+
+/* PD CARD */
+.vt-pd{background:#FBFAF5;border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;display:flex;gap:.65rem;align-items:flex-start;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;text-align:left;margin-bottom:.45rem;text-decoration:none;color:inherit}
+.vt-pd:hover{transform:translateY(-1px);box-shadow:var(--shadow-soft);border-color:var(--accent);border-bottom:1px solid var(--accent)}
+.vt-pd .vt-av{width:42px;height:42px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--ink) 0%,var(--accent) 100%);color:#fff;display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:.95rem;overflow:hidden;position:relative;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.vt-pd .vt-av img{width:100%;height:100%;object-fit:cover}
+.vt-pd .vt-info{flex:1;min-width:0}
+.vt-pd .vt-name{font-weight:600;font-size:.82rem;color:var(--ink);line-height:1.2}
+.vt-pd .vt-name .vt-cred{font-weight:400;color:var(--ink-mute);font-size:.7rem;letter-spacing:.01em}
+.vt-pd .vt-city{font-family:JetBrains Mono,monospace;font-size:.66rem;color:var(--accent);margin-top:.15rem;letter-spacing:.03em}
+.vt-pd .vt-bio{font-size:.7rem;color:var(--ink-soft);margin-top:.3rem;line-height:1.35}
+.vt-pd .vt-bio strong{color:var(--ink);font-weight:600}
+.vt-pd .vt-tags{margin-top:.35rem;display:flex;gap:.25rem;flex-wrap:wrap}
+.vt-pd .vt-tags span{font-size:.56rem;padding:.1rem .35rem;border-radius:3px;background:var(--paper-deep);color:var(--ink-mute);font-weight:600;letter-spacing:.04em;text-transform:uppercase;line-height:1.4}
+.vt-pd .vt-tags .gold{background:rgba(200,166,100,.2);color:#8A7028}
+.vt-pd .vt-tags .blue{background:rgba(30,91,174,.12);color:var(--accent)}
+.vt-pd .vt-tags .teal{background:rgba(14,159,142,.14);color:var(--teal)}
+.vt-pd .vt-tags .purple{background:rgba(155,93,229,.14);color:#7B40C8}
+.vt-pd .vt-tags .crimson{background:rgba(155,42,42,.10);color:var(--crimson)}
+
+/* FEATURED PD with sub-lineage */
+.vt-pd.feat{background:linear-gradient(180deg,#FFFCF1 0%,#fff 100%);border-color:#C8A664;border-left:4px solid #C8A664;padding:.85rem .9rem}
+.vt-pd.feat .vt-av{border-color:#C8A664;box-shadow:0 0 0 2px #C8A664}
+.vt-pd.feat .vt-name{font-weight:700;color:#8A7028}
+
+/* Sub-lineage block */
+.vt-lineage{background:#fff;border:1px dashed #C8A664;border-left:none;border-radius:0 8px 8px 0;margin:-.45rem 0 .45rem 1.5rem;padding:.55rem .7rem .55rem .9rem;position:relative}
+.vt-lineage::before{content:"";position:absolute;left:-1.5rem;top:-12px;bottom:0;width:1px;border-left:2px dashed #C8A664}
+.vt-lineage-head{font-family:JetBrains Mono,monospace;font-size:.6rem;letter-spacing:.14em;color:#8A7028;font-weight:700;margin-bottom:.4rem;text-transform:uppercase}
+.vt-alumni{display:grid;grid-template-columns:1fr 1fr;gap:.3rem .55rem}
+@media (max-width:520px){.vt-alumni{grid-template-columns:1fr}}
+.vt-alum{font-size:.7rem;color:var(--ink-soft);line-height:1.3;cursor:pointer;padding:.18rem .25rem;border-radius:3px;border:1px solid transparent}
+.vt-alum:hover{background:#FBFAF5;border-color:var(--line)}
+.vt-alum .vt-alum-y{font-family:JetBrains Mono,monospace;font-size:.6rem;color:#9AA7C2;letter-spacing:.04em;margin-right:.3rem;font-weight:600}
+.vt-alum.gold{color:#8A7028;font-weight:600}
+.vt-alum.gold::after{content:" ★";color:#C8A664}
+
+/* 2nd-gen sub-tree */
+.vt-gen2{margin-top:.45rem;padding:.4rem .55rem;background:#FFFCF1;border:1px dashed #C8A664;border-radius:5px;font-size:.66rem;color:#8A7028;line-height:1.4}
+.vt-gen2-label{font-family:JetBrains Mono,monospace;font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8A7028;display:block;margin-bottom:.2rem}
+
+/* LEGEND */
+.vt-legend{display:flex;flex-wrap:wrap;gap:.85rem;justify-content:center;padding-top:1rem;margin-top:1.2rem;border-top:1px solid var(--line);font-size:.7rem;color:var(--ink-mute)}
+.vt-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.35rem;vertical-align:middle}
+
+/* ORIGINS TABLE */
+.origins-section{margin-top:2.5rem}
+.origins-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.origins-head h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--ink);line-height:1.1}
+.origins-bar{height:30px;border-radius:6px;overflow:hidden;display:flex;border:1px solid var(--line);box-shadow:var(--shadow-soft);margin-bottom:1rem}
+.origins-bar .seg{height:100%;display:grid;place-items:center;font-family:JetBrains Mono,monospace;font-size:.62rem;font-weight:700;color:#fff;letter-spacing:.06em;transition:flex .2s;min-width:60px}
+.origins-bar .seg:hover{flex:2.5}
+.origins-table{width:100%;border-collapse:collapse;font-size:.85rem;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow-soft)}
+.origins-table thead th{background:#0A1F44;color:#FCFAF3;text-align:left;padding:.8rem 1rem;font-weight:600;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+.origins-table tbody td{padding:.7rem 1rem;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.origins-table tbody tr:last-child td{border-bottom:0}
+.origins-table tbody td.k{font-weight:600;color:var(--ink)}
+.origins-table tbody td .col-chip{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.4rem;vertical-align:middle}
+.origins-table tbody td .examples{font-size:.78rem;color:var(--ink-mute);font-style:italic}
+.origins-table tbody td .num{font-family:JetBrains Mono,monospace;font-weight:700;color:var(--ink)}
+
+@media (max-width:880px){
+  .vt-root-title{font-size:1.8rem}
+  .vt-root-meta{font-size:.84rem}
+  .vt-swim{padding:.85rem}
+  .vt-pd{padding:.6rem .65rem}
+  .vt-pd .vt-av{width:36px;height:36px;font-size:.78rem}
+  .vt-pd .vt-name{font-size:.78rem}
+  .vt-pd .vt-bio{font-size:.66rem}
+  .vt-lineage{margin-left:1rem;padding:.45rem .55rem .45rem .65rem}
+  .vt-lineage::before{left:-1rem}
+  .origins-bar{height:24px}
+  .origins-table{font-size:.78rem}
+  .origins-table thead th, .origins-table tbody td{padding:.55rem .65rem}
+  .origins-table tbody td .examples{font-size:.72rem}
+}
+
+/* ========================================================
    DEMONSTRATION-ONLY WATERMARKING  ·  HIGH PRIORITY VISUAL
    ======================================================== */
 
@@ -798,38 +972,72 @@ nav.topnav{top:auto}
       </div>
 
       <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem;flex-wrap:wrap">
-        <span class="dbadge fact">FACTUAL · 47 publicly verified surgeons</span>
-        <span class="dbadge sim">+ second-generation lineage chains</span>
-        <span class="dbadge mixed mobile-only">📱 Pinch &amp; drag to explore</span>
-        <span class="muted" style="font-size:.78rem;font-family:var(--mono);letter-spacing:.04em">Every photograph is sourced from <span style="color:var(--accent)">cosmeticsurgery.org/fellowships/directors</span>. Tap any gold-ringed node to open a profile.</span>
+        <span class="dbadge fact">FACTUAL · 37 AACS program directors + 5 documented lineage chains</span>
+        <span class="dbadge sim">Organized by pre-fellowship origin specialty</span>
+        <span class="muted" style="font-size:.78rem;font-family:var(--mono);letter-spacing:.04em">Origins verified via individual practice sites, ABCS diplomate registry, and AACS public directory. Click any PD card for profile or practice site.</span>
       </div>
-      <div class="tree-host" id="tree-host" style="height:980px">
-        <div class="tree-hint">SCROLL TO ZOOM &middot; DRAG TO PAN &middot; HOVER FOR DETAIL &middot; CLICK A NAME TO OPEN PROFILE</div>
-        <div class="tree-controls">
-          <button title="Zoom in" onclick="treeZoom(1.4)">+</button>
-          <button title="Zoom out" onclick="treeZoom(0.7)">−</button>
-          <button title="Fit to screen" onclick="treeReset()">⟲</button>
-          <button title="Focus on Cuzalina lineage" onclick="treeFocus('cuzalina')" style="width:auto;padding:0 .7rem;font-size:.72rem;letter-spacing:.04em">CUZALINA</button>
-          <button title="Focus on Branman → Nizam line" onclick="treeFocus('branman')" style="width:auto;padding:0 .7rem;font-size:.72rem;letter-spacing:.04em">BRANMAN→NIZAM</button>
+
+      <div class="anc-host" id="tree-host">
+        <div class="anc-hint">CLICK ANY NODE TO EXPAND / COLLAPSE &middot; SCROLL OR PINCH TO ZOOM &middot; DRAG TO PAN</div>
+        <div class="anc-controls">
+          <button title="Zoom in" onclick="ancZoom(1.35)">+</button>
+          <button title="Zoom out" onclick="ancZoom(0.74)">&minus;</button>
+          <button title="Reset / fit" onclick="ancReset()">&#x21bb;</button>
+          <button title="Expand all" onclick="ancExpandAll()" class="wide">EXPAND ALL</button>
+          <button title="Collapse all" onclick="ancCollapseAll()" class="wide">COLLAPSE ALL</button>
         </div>
-        <svg id="lineage-svg" viewBox="0 0 1800 1500" role="img" aria-label="AACS Fellowship Network Lineage Tree" preserveAspectRatio="xMidYMid meet"></svg>
-        <div class="tree-tooltip" id="tt-lineage"></div>
-        <div class="tree-legend">
-          <div>
-            <span><span class="dot" style="background:#1E5BAE"></span>General Cosmetic Surgery Fellowship PD &nbsp;(29 nodes)</span>
-            <span><span class="dot" style="background:#0E9F8E"></span>Facial Cosmetic Surgery Fellowship PD &nbsp;(8 nodes)</span>
-            <span><span class="dot" style="background:#C8A664"></span>Cuzalina&rsquo;s traceable alumni &nbsp;(8 nodes)</span>
-            <span><span class="dot" style="background:#0A1F44;border:2px solid #C8A664"></span>Profile available &mdash; click</span>
-          </div>
+        <svg id="anc-svg" viewBox="0 0 1800 1400" role="img" aria-label="AACS Fellowship Lineage Tree"></svg>
+        <div class="tree-tooltip" id="tt-anc"></div>
+        <div class="anc-legend">
+          <span><span class="anc-dot" style="background:#0A1F44;border:2px solid #C8A664"></span>AACS root</span>
+          <span><span class="anc-dot" style="background:#14306B;border:2px solid #C8A664"></span>Founding-era mentor</span>
+          <span><span class="anc-dot" style="background:#0A1F44"></span>Active program director (with documented lineage)</span>
+          <span><span class="anc-dot" style="background:#C8A664;border:2px solid #8A7028"></span>Trainee who became a program director (2nd-gen)</span>
+          <span><span class="anc-dot" style="background:#0E9F8E"></span>Fellow (publicly identified trainee)</span>
+          <span><span class="anc-dot" style="background:#FBFAF5;border:1px dashed #C8A664"></span>Future / projected fellow slot</span>
+          <span><span class="anc-dot" style="background:#9AA7C2"></span>Other AACS PDs (no AACS-internal mentor in this dataset)</span>
         </div>
       </div>
 
       <div class="kpi-row">
         <div class="kpi"><div class="k">FELLOWSHIP PROGRAMS</div><div class="v">37</div><div class="sub">29 General + 8 Facial — every AACS-certified U.S. program publicly indexed.</div></div>
-        <div class="kpi"><div class="k">VERIFIED CUZALINA ALUMNI INDEXED</div><div class="v">8</div><div class="sub">Mostofi, Tolomeo, Moein, Nelson, Gutierrez, Eid, Champion, Clark (2025), Kluis (2026). Each publicly sourced.</div></div>
-        <div class="kpi"><div class="k">SECOND-GENERATION LINKS CAPTURED</div><div class="v">1+</div><div class="sub">Branman&rsquo;s fellowship → Nizam → now Nizam runs his own AACS-certified facial program. The exact pattern STS calls &ldquo;surgical genealogy.&rdquo;</div></div>
+        <div class="kpi"><div class="k">DOCUMENTED LINEAGE CHAINS</div><div class="v">6+</div><div class="sub">Cuzalina&rarr;Koehler/McLain · Branman&rarr;Nizam · Tobin&rarr;Haiavy · Karlinsky&rarr;Kim · Deal+Nease&rarr;Maningas/Ray · R.F.&nbsp;Jackson&rarr;Lowery. The kind of surgical genealogy the LFPR formalizes.</div></div>
+        <div class="kpi"><div class="k">ORIGIN SPECIALTIES REPRESENTED</div><div class="v">6+</div><div class="sub">Dental-OMFS · General Surgery · ENT/Facial PRS · Dermatology · Oculoplastic · Hair Restoration. Living proof of the multi-specialty thesis.</div></div>
       </div>
-      <p class="footnote">Lineage tree includes every program director publicly indexed at <a href="https://cosmeticsurgery.org/fellowships/directors/" target="_blank">cosmeticsurgery.org/fellowships/directors</a>. Verified fellow alumni assembled from public sources: tulsasurgicalarts.com (surgical staff bios), AACS &ldquo;Match Day&rdquo; announcements (2025, 2026), and individual surgeon practice sites.</p>
+      <p class="footnote">Lineage tree includes every program director publicly indexed at <a href="https://cosmeticsurgery.org/fellowships/directors/" target="_blank">cosmeticsurgery.org/fellowships/directors</a>. Origin specialty for each PD verified via individual practice sites and the ABCS diplomate registry. Fellow alumni from tulsasurgicalarts.com surgical-staff bios, AACS &ldquo;Match Day&rdquo; announcements (2025, 2026), and individual surgeon practice sites.</p>
+
+      <!-- ===================== ORIGINS TABLE ===================== -->
+      <div class="origins-section">
+        <div class="origins-head">
+          <div>
+            <span class="dbadge fact">FACTUAL · publicly sourced</span>
+            <h3 style="margin-top:.4rem">Origins of the Academy &mdash; pre-fellowship training composition</h3>
+          </div>
+          <span class="muted" style="font-size:.78rem;font-family:var(--mono);letter-spacing:.04em">n = 37 current AACS-certified fellowship program directors</span>
+        </div>
+        <div class="origins-bar" id="origins-bar"></div>
+        <table class="origins-table" id="origins-table">
+          <thead>
+            <tr><th style="width:30%">Origin specialty</th><th style="width:8%">PDs</th><th style="width:8%">%</th><th>Representative figures &amp; documented lineage chains</th></tr>
+          </thead>
+          <tbody><!-- populated by JS --></tbody>
+        </table>
+        <p class="footnote">Origin specialty defined as the pre-AACS-fellowship residency that anchored the surgeon&rsquo;s primary surgical training. Surgeons with both OMFS and MD degrees (e.g., Cuzalina, Nizam, McLain, Koehler) are grouped under <strong>Dental-OMFS</strong>. Surgeons with multiple board certifications (e.g., Yee &mdash; ABOTO + ABFPRS + ABCS) are grouped under their residency pathway, not their final fellowship.</p>
+      </div>
+
+      <!-- ===================== AACS PAST PRESIDENTS TIMELINE ===================== -->
+      <div class="origins-section" style="margin-top:3rem">
+        <div class="origins-head">
+          <div>
+            <span class="dbadge fact">FACTUAL · cosmeticsurgery.org/past-presidents</span>
+            <h3 style="margin-top:.4rem">AACS Past Presidents &mdash; 1985 to present</h3>
+          </div>
+          <span class="muted" style="font-size:.78rem;font-family:var(--mono);letter-spacing:.04em">34 presidents across 40 years &middot; the official historical backbone of the Academy</span>
+        </div>
+        <p class="muted" style="font-size:.85rem;margin-bottom:1rem">The full chronological roster anchors every modern lineage chain shown in the tree above. Verified mentor relationships from this list: <strong>Tobin (1993-95)</strong> trained Cuzalina (later 2011-12 Pres), Karlinsky-Bellini (Chair AACS Fellowships), and Haiavy. <strong>Jackson (2002-03)</strong> trained Lowery (later 2019-20 Pres).</p>
+        <div class="pp-grid" id="pp-grid"></div>
+        <p class="footnote">Source: <a href="https://cosmeticsurgery.org/past-presidents/" target="_blank">cosmeticsurgery.org/past-presidents</a>. Phase 1 of the LFPR &mdash; the alumni capture &mdash; documents which of these 34 figures trained which of today&rsquo;s 37 program directors. Most of those mentor links are knowable; almost none are currently public.</p>
+      </div>
     </div>
   </section>
 
@@ -2393,7 +2601,11 @@ function treeFocus(key){
 /* =====================================================================
    5b) DENDROGRAM (the real lineage tree — wide, photo-avatar, click-to-profile)
    ===================================================================== */
-(function buildDendrogram(){
+(function buildDendrogram_OBSOLETE_v4(){
+  return; // Replaced by buildVerticalLineage_v5 below.
+})(); (function _ignore(){
+  return; // do not run the old d3 dendrogram code
+  // ---- (old code follows, never executed) ----
   // --- Pull the published headshot URLs out of the DOCTORS array ---
   const byName = Object.fromEntries(DOCTORS.map(d=>[d.n, d]));
 
@@ -2771,6 +2983,823 @@ function treeFocus(key){
   const cuzNode = root.descendants().find(d=>d.data.cuzalinaAnchor);
   if(cuzNode) treeFocusTransforms.cuzalina = computeFocusTransform(cuzNode, 1.55);
   if(branmanNode) treeFocusTransforms.branman = computeFocusTransform(branmanNode, 1.65);
+})();
+
+/* =====================================================================
+   5c) VERTICAL LINEAGE TREE v5 — DEPRECATED (replaced by v6 ancestry tree)
+       Now only renders the Origins Table; tree-rendering disabled.
+   ===================================================================== */
+(function buildVerticalLineage_v5(){
+  // === MASTER DATA: 37 AACS PDs + verified origin specialty + credentials ===
+  // Fields: n=name, cred=credentials, origin=top-level category, sub=subcategory,
+  // city=practice city/state, img=headshot URL or null, profile=internal profile id,
+  // bio=short origin-pathway phrase, tags=feature tags, fellows=number of documented fellows
+  const PD = [
+    // ===== DENTAL-OMFS (n=14) =====
+    {n:"Angelo Cuzalina", cred:"MD, DDS, FAACS", origin:"dent", sub:"OMFS / Dental", city:"Tulsa, OK", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Angelo-Cuzalina.webp", profile:"profile-cuzalina", bio:"Baylor DDS (2nd of 82) · U. Alabama residency in cosmetic & facial reconstruction · Founder Tulsa Surgical Arts 1998 · 18,000+ cases.", tags:["AACS PAST PRES 2011","ABCS PAST PRES 2013","★ FEATURED LINEAGE"], featured:"cuzalina"},
+    {n:"Sami A. Nizam II", cred:"MD, DMD, FAACS", origin:"dent", sub:"OMFS / Dental", city:"Montgomery, AL", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/11/Sami-Nizam.webp", profile:"profile-nizam", bio:"Rutgers integrated OMFS+MD · GS internship Newark · AACS fellowship under Branman, Little Rock AR.", tags:["★ 2ND-GEN PD","Branman alum"], featured:"branman-nizam"},
+    {n:"James R. Koehler", cred:"MD, DDS, FAACS", origin:"dent", sub:"OMFS / Dental", city:"Fairhope, AL", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/James-Koehler.webp", profile:"profile-koehler", bio:"UAB Med magna cum laude · OMFS pathway · AACS fellowship under Cuzalina · co-founded Olympus Cosmetic Surgery 2024.", tags:["★ 2ND-GEN PD","Cuzalina alum"]},
+    {n:"Scott Blyer", cred:"MD, DDS, FAACS", origin:"dent", sub:"OMFS / Dental", city:"Commack, NY", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Scott-Blyer.webp", bio:"OMFS pathway · dual MD+DDS.", tags:[]},
+    {n:"Erik Nuveen", cred:"MD, DMD, FAACS", origin:"dent", sub:"OMFS / Dental", city:"Oklahoma City, OK", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Erik-Nuveen.webp", bio:"OMFS pathway · dual MD+DMD.", tags:[]},
+    {n:"Alberico Sessa", cred:"MD, DMD, FAACS", origin:"dent", sub:"OMFS / Dental", city:"Sarasota, FL", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Alberico-Sessa.webp", bio:"OMFS pathway · co-author Valina-Sessa 2020 AJCS case-log paper.", tags:["AJCS author"]},
+    {n:"Drake Vincent", cred:"MD, DMD, FAACS", origin:"dent", sub:"OMFS / Dental", city:"Salt Lake City, UT", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Drake-Vincent.webp", bio:"OMFS pathway · dual MD+DMD.", tags:[]},
+    {n:"Daria Hamrah", cred:"DMD, FAACS", origin:"dent", sub:"OMFS / Dental", city:"McLean, VA", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Daria-Hamrah.webp", bio:"OMFS pathway · Facial Cosmetic Surgery fellowship.", tags:["Facial"]},
+    {n:"Cason Huynh", cred:"MD, DMD, FACS, FAACS", origin:"dent", sub:"OMFS / Dental", city:"Houston, TX", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2026/04/Carsons-Huynh.webp", bio:"OMFS + General Surgery (FACS) · dual pathway.", tags:["Facial","FACS"]},
+    {n:"Husain Ali Khan", cred:"MD, DMD, FAACS", origin:"dent", sub:"OMFS / Dental", city:"Atlanta, GA", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Husain-Ali-Khan.webp", bio:"OMFS pathway · Facial Cosmetic Surgery.", tags:["Facial"]},
+    {n:"Jon D. Perenack", cred:"MD, DDS, FAACS", origin:"dent", sub:"OMFS / Dental", city:"Baton Rouge, LA", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Jon-Perenack.webp", bio:"OMFS pathway · Facial Cosmetic Surgery.", tags:["Facial"]},
+    {n:"Randy Sanovich", cred:"DDS, FAACS", origin:"dent", sub:"OMFS / Dental", city:"San Antonio, TX", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Randy-Sanovich.webp", bio:"OMFS pathway · Facial Cosmetic Surgery.", tags:["Facial"]},
+    {n:"Ryan M. Diepenbrock", cred:"DDS, FAACS", origin:"dent", sub:"OMFS / Dental", city:"Fort Wayne, IN", img:null, profile:"profile-diepenbrock", bio:"OMFS pathway · 2020 President ABFCS · Chair, AACS Facial Fellowships.", tags:["Facial","Chair AACS Facial Fellowships"]},
+    {n:"Landon D. McLain", cred:"MD, DMD, FACS", origin:"dent", sub:"OMFS / Dental", city:"Huntsville, AL", img:null, profile:"profile-mclain", bio:"UAB DMD · OMFS pathway · AACS fellowship Tulsa under Cuzalina Jan 2010–Jan 2011 (1,400 cases).", tags:["★ Cuzalina alum","FACS"]},
+
+    // ===== SURGICAL-MD · General Surgery (n=10) =====
+    {n:"Rhys L. Branman", cred:"MD, FAACS", origin:"surg", sub:"General Surgery", city:"Little Rock, AR", img:null, profile:"profile-branman", bio:"Vanderbilt Med · General Surgery · AACS Fellowship 1998 · trained Sami Nizam.", tags:["★ FEATURED LINEAGE","ABCS Examiner"], featured:"branman-nizam"},
+    {n:"Ehab Akkary", cred:"MD, FACS, FAACS", origin:"surg", sub:"General Surgery", city:"Morgantown, WV", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/12/Ehab-Akkary.webp", bio:"FACS · General Surgery pathway.", tags:["FACS"]},
+    {n:"Joseph Castellano", cred:"MD, FAACS, FACS", origin:"surg", sub:"General Surgery", city:"Tampa, FL", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Joseph-Castellano.webp", bio:"FACS · General Surgery pathway.", tags:["FACS"]},
+    {n:"Anh-Tuan N. Truong", cred:"MD, FAACS, FACS", origin:"surg", sub:"General Surgery", city:"Houston, TX", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Anh-Tuan-N-Truong.webp", bio:"U. Colorado Med · U. Illinois Chicago General Surgery · triple-board ABS + ABCS.", tags:["FACS"]},
+    {n:"Jacob Haiavy", cred:"MD, FAACS", origin:"surg", sub:"General Surgery", city:"Rancho Cucamonga, CA", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Jacob-Haiavy.webp", bio:"Mt Sinai NY Med · GS internship · Maxillofacial training · AACS fellowship under Howard Tobin (past AACS Pres).", tags:["★ Tobin alum","ABCS Past Pres"]},
+    {n:"Victoria Karlinsky-Bellini", cred:"MD, FAACS", origin:"surg", sub:"General Surgery", city:"New York, NY", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Victoria-Karlinsky-Bellini.webp", profile:"profile-karlinsky", bio:"Ross U. Med · Beth Israel Med Center Chief Resident · Madame Chair, AACS Fellowship Programs.", tags:["★ FEATURED LINEAGE","Chair AACS Fellowships"]},
+    {n:"Marco N. Barusco", cred:"MD, FAACS", origin:"surg", sub:"General Surgery", city:"Port Orange, FL", img:null, profile:"profile-barusco", bio:"Faculdade de Ciências Médicas de Santos (Brazil) 1994 · General Surgery Ana Costa Hospital · Family Med UAB · Hair Restoration fellowship 1998–99. Current AACS Vice President.", tags:["AACS VP 2025","AJCS Section Editor"]},
+    {n:"Tony Mangubat", cred:"MD, FAACS", origin:"surg", sub:"General Surgery", city:"Tukwila, WA", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Tony-Mangubat.webp", bio:"University of Washington Med · General Surgery U. Kentucky · AACS PD ~20 years.", tags:[]},
+    {n:"Phu M. Do", cred:"MD, FAACS", origin:"surg", sub:"General Surgery", city:"Atlanta, GA", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Phu-Do.webp", bio:"Brown U. Med 1995 · Boston University Surgery 1995–97 · UT Health Houston Surgery 1998–2001.", tags:[]},
+    {n:"Chad Deal", cred:"MD, FAACS", origin:"surg", sub:"General Surgery", city:"Houston, TX", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Chad-Deal.webp", bio:"ABS + ABCS + ABFCS triple-boarded · Program Director, Southern Surgical Arts AACS fellowship · trained Maningas + Ray.", tags:["★ FEATURED LINEAGE","Triple-board"]},
+
+    // ===== SURGICAL-MD · ENT / Facial PRS (n=4 from MD pathway) =====
+    {n:"Mark K. Mandell-Brown", cred:"MD, FAACS", origin:"surg", sub:"ENT / Facial PRS", city:"Cincinnati, OH", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Mark-Mandell-Brown.webp", bio:"U. Cincinnati Med · Otolaryngology-HNS residency UC 1982–86 · ABFPRS 1988 · ABCS 2009.", tags:["AACS Past Pres 2019-21","Triple-board"]},
+    {n:"J. Kevin Duplechain", cred:"MD, FAACS", origin:"surg", sub:"ENT / Facial PRS", city:"Lafayette, LA", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/J-Kevin-Duplechain.webp", bio:"LSU New Orleans Med · Ochsner Surgery 1985–87 · Tulane Otolaryngology-HNS 1987–91 · ABCS + ABFPRS + ABOTO triple-boarded.", tags:["Triple-board"]},
+    {n:"Carey D. Nease", cred:"MD, FAACS", origin:"surg", sub:"ENT / Facial PRS", city:"Chattanooga, TN", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2026/03/Carey-Nease.webp", bio:"U. Florida 1990–98 · ENT residency Oklahoma City · Facial Plastic & Cosmetic fellowship Little Rock · triple-boarded · Southern Surgical Arts.", tags:["★ FEATURED LINEAGE","Triple-board"]},
+    {n:"Suzanne Yee", cred:"MD, FAACS, FACS", origin:"surg", sub:"ENT / Facial PRS", city:"Little Rock, AR", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Suzanne-Yee.webp", bio:"U. Arkansas Med 1989 · GS internship · Otolaryngology-HNS residency UAMS · Facial PRS fellowship UT Houston · Triple-board ABCS+ABOTO+ABFPRS.", tags:["Triple-board","FACS"]},
+
+    // ===== SURGICAL-MD · Other / Unverified (n=2) =====
+    {n:"Pablo Rivera", cred:"MD, FAACS", origin:"surg", sub:"Other / Pending public verification", city:"McAllen, TX", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Pablo-Rivera.webp", bio:"Associate Professor of Southern Texas Dermatology Residency. Origin specialty pending public verification.", tags:["Pending verification"]},
+    {n:"Michael Rodriguez", cred:"MD, FAACS", origin:"surg", sub:"Other / Pending public verification", city:"Miami, FL", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Michael-Rodriguez.webp", bio:"Origin specialty pending public verification.", tags:["Pending verification"]},
+
+    // ===== DERM / OPHTH (n=3) =====
+    {n:"Lisa Chipps", cred:"MD, MS, FABCS", origin:"derm", sub:"Dermatology / Mohs", city:"Beverly Hills, CA", img:null, profile:"profile-chipps", bio:"UCLA undergrad+MS · USC Keck Med · Dermatology residency U. Colorado + Harbor-UCLA · Mohs + Cosmetic fellowship Moy-Fincher · Director of Dermatologic Surgery Harbor-UCLA 10 yrs.", tags:["AACS President 2025","Quadruple-board"]},
+    {n:"Tanuj Nakra", cred:"MD, FAACS", origin:"derm", sub:"Ophth / Oculoplastic", city:"Austin, TX", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Tanuj-Nakra.webp", bio:"Ophthalmology origin · Oculoplastic / Facial Cosmetic.", tags:["Facial"]},
+    {n:"Soheila Rostami", cred:"MD, FAACS", origin:"derm", sub:"Ophth / Oculoplastic", city:"Reston, VA", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Soheila-Rostami.webp", bio:"Ophthalmology origin · Oculoplastic / Facial Cosmetic.", tags:["Facial"]},
+
+    // ===== DO PATHWAY (n=8) — origin specialty verified =====
+    {n:"Clayton Frenzel", cred:"DO, FAACS", origin:"do", sub:"DO · General Surgery", city:"Dallas, TX", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Clayton-Frenzel.webp", bio:"DO · UT San Antonio General/Trauma Surgery 5 yrs (Chief Resident) · U. Conn/St. Francis MIS+Bariatric fellowship · AACS Facial+Body fellowship SoCal · ABS + ABCS.", tags:["DO · GS","ABS + ABCS"]},
+    {n:"Bryan Friedman", cred:"DO, FAACS", origin:"do", sub:"DO · ENT / Facial PRS", city:"Scottsdale, AZ", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Bryan-Friedman.webp", bio:"DO Rowan-Virtua (UMDNJ) · Otolaryngology + Facial PRS dual residency Saint Barnabas NJ · MSKCC H&N rotation · ABCS + ABFCS founding member.", tags:["DO · ENT","Triple-board"]},
+    {n:"Claudia Kim", cred:"DO, FAACS", origin:"do", sub:"DO · General Surgery", city:"New York, NY", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Claudia-Kim.webp", bio:"DO NY College of Osteopathic Med · MS Basic Med Sci NYMC · General Surgery NYU Langone Brooklyn · AACS fellowship at New Look New Life (Karlinsky).", tags:["★ Karlinsky alum","DO · GS"]},
+    {n:"Chris Lowery", cred:"DO, FAACS", origin:"do", sub:"DO · General Surgery", city:"Noblesville/Indianapolis, IN", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Chris-Lowery.webp", bio:"DO Kansas City COM · 4-yr Grandview Med Ctr General Surgery (Chief Resident 2004–05) · AACS fellowship 2009 under Robert F. Jackson · Past AACS President.", tags:["★ Jackson alum","AACS Past Pres"]},
+    {n:"Talon Maningas", cred:"DO, FAACS", origin:"do", sub:"DO · ENT / Facial PRS", city:"Joplin, MO / Phoenix, AZ", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Talon-Maningas.webp", bio:"DO Kansas City U. Med (Magna Cum Laude 2010) · OSU + Freeman ENT/HNS + Facial PRS 2015 · AACS fellowship under Deal+Nease (1,200+ cases) · Triple-board ABCS+ABFCS+AOBOO-HNS.", tags:["★ Deal/Nease alum","Triple-board"]},
+    {n:"Scott Moradian", cred:"DO, FAACS", origin:"do", sub:"DO · General Surgery", city:"Encino, CA", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Scott-Moradian.webp", bio:"DO NOVA Southeastern COM 2013 (Honors) · Larkin Community Hospital General Surgery (Chief Resident 2013–18) · AACS fellowship 2018–19 (800+ cases) · ABOS + ABCS double-board.", tags:["DO · GS","ABOS + ABCS"]},
+    {n:"Andrew Ray", cred:"DO, FAACS", origin:"do", sub:"DO · General Surgery", city:"Chattanooga, TN", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Andrew-Ray.webp", bio:"DO · General Surgery Pontiac MI · 5 yrs rural NH practice (hernia, skin cancer/facial flap recon) · AACS fellowship Southern Surgical Arts under Deal+Nease.", tags:["★ Deal/Nease alum","DO · GS"]},
+    {n:"Alex Sobel", cred:"DO, FAACS", origin:"do", sub:"DO · ENT / Facial PRS", city:"Seattle, WA", img:"https://cosmeticsurgery.org/fellowships/wp-content/uploads/2025/05/Alex-Sobel.webp", bio:"DO · Otolaryngology HNS residency · Past President ABCS AND ABFCS · 10+ years training fellows.", tags:["Past Pres ABCS","Past Pres ABFCS"]},
+
+    // ===== HAIR RESTORATION / SUBSPECIALTY MD (overlay listed under Surgical-MD GS for Barusco) =====
+  ];
+
+  // Verified Cuzalina alumni (sub-tree under Cuzalina)
+  const CUZALINA_FELLOWS = [
+    {y:"2026", n:"Austin M. Kluis, MD", note:"Incoming · LFPR proposer", gold:true},
+    {y:"2025", n:"Sacha Clark, DDS, MD", note:"2025 match"},
+    {y:"2024", n:"Pasha Mostofi, MD, DMD", note:"Current · Woodinville WA"},
+    {y:"2022", n:"Sebastian Gutierrez, MD", note:"TSA staff"},
+    {y:"2017", n:"Chase Nelson, MD", note:"TSA staff"},
+    {y:"2016", n:"Babak Moein, MD", note:"Southern California"},
+    {y:"2015", n:"Pasquale Tolomeo, MD", note:"Tulsa · FL · MA · ~2,000 cases"},
+    {y:"2012", n:"James R. Koehler, MD, DDS", note:"→ Fairhope AL · NOW AACS PD", gold:true},
+    {y:"2010", n:"Landon D. McLain, MD, DMD", note:"→ Huntsville AL · 1,400 cases", gold:true}
+  ];
+  const KOEHLER_SUBFELLOWS = ["Eastern Shore fellow 2023","Eastern Shore fellow 2024","Eastern Shore fellow 2025"];
+  const NIZAM_SUBFELLOWS  = ["Alabama Surgical Arts fellow 2025","Alabama Surgical Arts fellow 2026"];
+
+  // === Render swimlanes (NO-OP IN v6 — element removed; we keep the function for Origins Table) ===
+  const lanes = document.getElementById("vt-swimlanes");
+  // expose PD for v6 tree builder
+  window.__PD = PD;
+  window.__CUZALINA_FELLOWS = CUZALINA_FELLOWS;
+  window.__KOEHLER_SUBFELLOWS = KOEHLER_SUBFELLOWS;
+  window.__NIZAM_SUBFELLOWS = NIZAM_SUBFELLOWS;
+  if(lanes){
+  const groups = {
+    surg: {key:"surg", title:"Surgical MD", desc:"Allopathic surgical residency pathway. Subdivided by surgical subspecialty origin.", subs:["General Surgery","ENT / Facial PRS","Other / Pending public verification"]},
+    dent: {key:"dent", title:"Dental-OMFS", desc:"DDS or DMD foundation, Oral &amp; Maxillofacial Surgery origin. Many hold dual MD+DDS/DMD via integrated programs.", subs:["OMFS / Dental"]},
+    derm: {key:"derm", title:"Derm / Ophth", desc:"Dermatology, Mohs micrographic surgery, and Oculoplastic / Ophth pathway.", subs:["Dermatology / Mohs","Ophth / Oculoplastic"]},
+    do:   {key:"do",   title:"Osteopathic (DO)", desc:"DO degree with verified residency origin. Most have completed allopathic-equivalent surgical residency.", subs:["DO · General Surgery","DO · ENT / Facial PRS"]}
+  };
+
+  function renderPD(pd){
+    const av = pd.img ? `<img src="${pd.img}" alt="${pd.n}" onerror="this.style.display='none'" />` : pd.n.split(/\s+/).filter(Boolean).slice(0,2).map(s=>s[0]).join("").toUpperCase();
+    const tagsHtml = (pd.tags||[]).map(t=>{
+      let cls = "";
+      if(t.includes("★")) cls = "gold";
+      else if(t.includes("AACS Pres")||t.includes("AACS VP")) cls = "blue";
+      else if(t.includes("Past Pres")||t.includes("Chair")||t.includes("ABCS President")) cls = "purple";
+      else if(t.includes("FACS")||t.includes("Triple-board")||t.includes("ABS")||t.includes("ABFCS")) cls = "teal";
+      else if(t.includes("Pending")) cls = "crimson";
+      return `<span class="${cls}">${t}</span>`;
+    }).join("");
+    const click = pd.profile ? `onclick="showView('${pd.profile}')"` : (pd.url ? `onclick="window.open('${pd.url}','_blank')"` : "");
+    const featClass = pd.featured ? " feat" : "";
+    return `<div class="vt-pd${featClass}" ${click}>
+      <div class="vt-av">${av}</div>
+      <div class="vt-info">
+        <div class="vt-name">${pd.n} <span class="vt-cred">· ${pd.cred}</span></div>
+        <div class="vt-city">${pd.city}</div>
+        <div class="vt-bio">${pd.bio}</div>
+        ${tagsHtml ? `<div class="vt-tags">${tagsHtml}</div>` : ""}
+      </div>
+    </div>`;
+  }
+
+  function renderLineage(label, items, subItems){
+    const itemsHtml = items.map(a=>`<div class="vt-alum ${a.gold?'gold':''}" title="${a.note||''}"><span class="vt-alum-y">${a.y}</span>${a.n}</div>`).join("");
+    const subHtml = subItems && subItems.length ? `<div class="vt-gen2"><span class="vt-gen2-label">2nd-gen lineage continues</span>${subItems.join(" · ")}</div>` : "";
+    return `<div class="vt-lineage">
+      <div class="vt-lineage-head">${label}</div>
+      <div class="vt-alumni">${itemsHtml}</div>
+      ${subHtml}
+    </div>`;
+  }
+
+  let html = "";
+  Object.values(groups).forEach(g=>{
+    const inGroup = PD.filter(p=>p.origin===g.key);
+    html += `<section class="vt-swim ${g.key==='surg'?'surg':g.key==='dent'?'dent':g.key==='derm'?'derm':'dopath'}">
+      <div class="vt-swim-head">
+        <div class="vt-swim-title">${g.title}</div>
+        <div class="vt-swim-count">${inGroup.length} program directors</div>
+        <div class="vt-swim-desc">${g.desc}</div>
+      </div>`;
+    g.subs.forEach(sub=>{
+      const inSub = inGroup.filter(p=>p.sub===sub);
+      if(!inSub.length) return;
+      html += `<div class="vt-subcat"><span class="vt-subcat-head">${sub} · n=${inSub.length}</span>`;
+      inSub.forEach(pd=>{
+        html += renderPD(pd);
+        // Inject sub-lineage immediately after the featured PD
+        if(pd.n === "Angelo Cuzalina"){
+          html += renderLineage("Cuzalina lineage · 9 documented alumni", CUZALINA_FELLOWS, KOEHLER_SUBFELLOWS.map(f=>`Koehler → ${f}`));
+        }
+        if(pd.n === "Rhys L. Branman"){
+          html += renderLineage("Branman → Nizam lineage chain", [
+            {y:"2013", n:"Sami A. Nizam II, MD, DMD", note:"Now AACS PD himself", gold:true}
+          ], NIZAM_SUBFELLOWS.map(f=>`Nizam → ${f}`));
+        }
+        if(pd.n === "Victoria Karlinsky-Bellini"){
+          html += renderLineage("Karlinsky lineage", [
+            {y:"recent", n:"Claudia Kim, DO", note:"Trained at New Look New Life under Karlinsky", gold:true}
+          ]);
+        }
+        if(pd.n === "Chad Deal"){
+          html += renderLineage("Deal + Nease (Southern Surgical Arts) lineage", [
+            {y:"2015", n:"Talon Maningas, DO", note:"1,200+ cases under Deal & Nease", gold:true},
+            {y:"recent", n:"Andrew Ray, DO", note:"AACS fellowship at Southern Surgical Arts", gold:true}
+          ]);
+        }
+      });
+      html += `</div>`;
+    });
+    html += `</section>`;
+  });
+  lanes.innerHTML = html;
+  } /* end if(lanes) */
+
+  // === Render Origins Table ===
+  const counts = {};
+  PD.forEach(p=>{ counts[p.origin] = (counts[p.origin]||0)+1; });
+  const total = PD.length;
+  const rows = [
+    {k:"dent", color:"#9B5DE5", label:"Dental-OMFS (DDS/DMD)",          examples:"Cuzalina · Nizam · Koehler · McLain · Diepenbrock · Sessa · Vincent · Nuveen · Hamrah · Huynh · Khan · Perenack · Sanovich · Blyer."},
+    {k:"surg", color:"#1E5BAE", label:"Surgical-MD (allopathic residency)", examples:"Branman (GS) · Akkary (GS) · Castellano (GS) · Truong (GS) · Haiavy (GS+Maxfac · Tobin alum) · Karlinsky (GS) · Barusco (intl GS) · Mangubat (GS) · Phu Do (GS) · Deal (GS) · Mandell-Brown (ENT) · Duplechain (ENT) · Nease (ENT) · Yee (ENT)."},
+    {k:"derm", color:"#0E9F8E", label:"Derm / Ophth-Oculoplastic",      examples:"Chipps (Derm+Mohs · current AACS President) · Nakra (Ophth/Oculoplastic) · Rostami (Ophth/Oculoplastic)."},
+    {k:"do",   color:"#D08E29", label:"Osteopathic (DO) pathway",       examples:"Frenzel (GS chief res, UTSA) · Friedman (ENT+Facial PRS, Saint Barnabas) · Kim (GS, NYU Brooklyn · Karlinsky alum) · Lowery (GS chief res, Grandview · Jackson alum · Past AACS Pres) · Maningas (ENT+Facial PRS, OSU · Deal/Nease alum) · Moradian (GS chief res, Larkin) · Ray (GS, Pontiac MI · Deal/Nease alum) · Sobel (ENT · past ABCS/ABFCS Pres)."}
+  ];
+  // Build composition bar
+  const bar = document.getElementById("origins-bar");
+  if(bar){
+    bar.innerHTML = rows.map(r=>{
+      const n = counts[r.k]||0;
+      const pct = (n/total*100).toFixed(0);
+      return `<div class="seg" style="flex:${n};background:${r.color}" title="${r.label}: ${n}/${total} (${pct}%)">${r.label.split(/[\s\/(]/)[0]} · ${n}</div>`;
+    }).join("");
+  }
+  // Build table body
+  const tbody = document.querySelector("#origins-table tbody");
+  if(tbody){
+    tbody.innerHTML = rows.map(r=>{
+      const n = counts[r.k]||0;
+      const pct = (n/total*100).toFixed(0);
+      return `<tr>
+        <td class="k"><span class="col-chip" style="background:${r.color}"></span>${r.label}</td>
+        <td><span class="num">${n}</span></td>
+        <td><span class="num">${pct}%</span></td>
+        <td class="examples">${r.examples}</td>
+      </tr>`;
+    }).join("") + `<tr><td class="k" colspan="3"><strong>Total program directors indexed</strong></td><td><strong>${total}</strong> with verified or pending-verification origin specialty.</td></tr>`;
+  }
+
+  // === Render AACS Past Presidents Timeline (FACTUAL · official cosmeticsurgery.org roster) ===
+  const PP = [
+    {y:"2025-26", n:"Lisa Chipps, MD",                       img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Lisa-Chipps.webp",         link:""},
+    {y:"2024-25", n:"Mo Banki, MD, DMD",                     img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Mo-Banki.webp",            link:""},
+    {y:"2023-24", n:"Alex Sobel, DO",                        img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Alex-Sobel.webp",          link:""},
+    {y:"2022-23", n:"J. Kevin Duplechain, MD",               img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/J-Kevin-Duplechain.webp",  link:""},
+    {y:"2020-22", n:"Mark Mandell-Brown, MD",                img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Mark-Mandell-Brown.webp",  link:""},
+    {y:"2019-20", n:"Chris Lowery, DO",                      img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Chris-Lowrey.webp",        link:"Jackson alumnus"},
+    {y:"2018-19", n:"Suzan Obagi, MD",                       img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Suzan-Obagi.webp",         link:""},
+    {y:"2017-18", n:"Michael Kluska, DO",                    img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Michael-Kluska-1.webp",    link:""},
+    {y:"2016-17", n:"Robert A. Shumway, MD",                 img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Robert-Shumway.webp",      link:""},
+    {y:"2015-16", n:"Michael J. Will, MD",                   img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Michael-Will.webp",        link:""},
+    {y:"2014-15", n:"Jane Petro, MD",                        img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Jane-Petro.webp",          link:""},
+    {y:"2013-14", n:"Neil Sadick, MD",                       img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Neil-Sadick.webp",         link:""},
+    {y:"2012-13", n:"Gerald Edds, MD",                       img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Gerald-Edds.webp",         link:""},
+    {y:"2011-12", n:"Angelo Cuzalina, MD, DDS",              img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Angelo-Cuzalina.webp",     link:"Tobin alumnus"},
+    {y:"2010-11", n:"Mark Berman, MD",                       img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Mark-Berman.webp",         link:""},
+    {y:"2009-10", n:"Patrick G. McMenamin, MD",              img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Patrick-McMenamin.webp",   link:""},
+    {y:"2008-09", n:"Steven B. Hopping, MD",                 img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Steven-Hopping.webp",      link:""},
+    {y:"2007-08", n:"Edward B. Lack, MD",                    img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Edward-Lack.webp",         link:""},
+    {y:"2006-07", n:"Jim E. Gilmore, MD",                    img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Jim-Gilmore.webp",         link:""},
+    {y:"2005-06", n:"Claude H. Crockett, Jr., MD",           img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Claude-Crockett.webp",     link:""},
+    {y:"2004-05", n:"C. William Hanke, MD",                  img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/William-Hanke.webp",       link:""},
+    {y:"2003-04", n:"Clark O. Taylor, MD, DDS",              img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Clark-Taylor.webp",        link:""},
+    {y:"2002-03", n:"Robert F. Jackson, MD",                 img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Robert-Jackson.webp",      link:"→ trained Lowery"},
+    {y:"2001-02", n:"Gary D. Monheit, MD",                   img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Gary-Monheit.webp",        link:""},
+    {y:"2000-01", n:"Douglas D. Dedo, MD",                   img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Douglas-Dedo.webp",        link:""},
+    {y:"1999-2000",n:"Peter D. Waite, MD, DDS",              img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Peter-Waite.webp",         link:""},
+    {y:"1998-99", n:"William H. Beeson, MD",                 img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/William-Beeson.webp",      link:""},
+    {y:"1997-98", n:"Guillermo D. Castillo, MD",             img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Guillermo-Castillo.webp",  link:""},
+    {y:"1995-97", n:"Richard L. Dolsky, MD",                 img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Richard-Dolsky-1.webp",    link:""},
+    {y:"1993-95", n:"Howard A. Tobin, MD",                   img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Howard-Tobin.webp",        link:"→ trained Cuzalina, Karlinsky, Haiavy"},
+    {y:"1991-93", n:"Thomas H. Alt, MD",                     img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Thomas-Alt.webp",          link:""},
+    {y:"1989-91", n:"Richard T. Caleel, DO",                 img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Richard-Caleel.webp",      link:""},
+    {y:"1987-89", n:"Julius Newman, MD",                     img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Julius-Newman-1.webp",     link:""},
+    {y:"1985-87", n:"Richard C. Webster, MD",                img:"https://cosmeticsurgery.org/wp-content/uploads/2025/05/Richard-Webster.webp",     link:"★ FOUNDING PRESIDENT"}
+  ];
+  const ppGrid = document.getElementById("pp-grid");
+  if(ppGrid){
+    ppGrid.innerHTML = PP.map(p=>{
+      const linked = !!p.link;
+      const initials = p.n.split(/\s+/).filter(Boolean).slice(0,2).map(s=>s[0]).join("").toUpperCase();
+      const av = p.img ? `<img src="${p.img}" alt="${p.n}" onerror="this.style.display='none';this.parentElement.textContent='${initials}'" />` : initials;
+      return `<div class="pp-card ${linked?'linked':''}">
+        <div class="pp-av">${av}</div>
+        <div class="pp-info">
+          <div class="pp-yr">${p.y}</div>
+          <div class="pp-nm">${p.n}</div>
+          ${linked?`<div class="pp-link">${p.link}</div>`:""}
+        </div>
+      </div>`;
+    }).join("");
+  }
+})();
+
+/* =====================================================================
+   5d) ANCESTRY GENEALOGY TREE v6 — d3.tree collapsible + cross-branch overlay
+   ===================================================================== */
+let ancZoomBehavior = null, ancZoomG = null, ancRoot = null, ancUpdate = null, ancOverlayOn = true;
+function ancZoom(k){ if(ancZoomBehavior) d3.select("#anc-svg").transition().duration(220).call(ancZoomBehavior.scaleBy,k); }
+function ancReset(){ if(ancZoomBehavior) d3.select("#anc-svg").transition().duration(380).call(ancZoomBehavior.transform,d3.zoomIdentity); }
+function ancExpandAll(){ if(!ancRoot||!ancUpdate) return; ancRoot.each(d=>{ if(d._children){d.children=d._children;d._children=null;} }); ancUpdate(ancRoot); }
+function ancCollapseAll(){ if(!ancRoot||!ancUpdate) return; ancRoot.each(d=>{ if(d.depth>0 && d.children){d._children=d.children;d.children=null;} }); ancUpdate(ancRoot); }
+function ancToggleOverlay(){ ancOverlayOn = !ancOverlayOn; d3.select("#anc-overlay-g").attr("display", ancOverlayOn ? null : "none"); const b=document.getElementById("anc-overlay-btn"); if(b) b.textContent = ancOverlayOn ? "OVERLAY ON" : "OVERLAY OFF"; }
+
+(function buildAncestryTree_v6(){
+  if(typeof d3 === "undefined") return;
+  const PD = window.__PD || [];
+  if(!PD.length) return;
+
+  // ===== LINEAGE-ONLY TREE DATA =====
+  // Helper to find a PD's photo URL/profile from the master array
+  function findPd(name){ return PD.find(p=>p.n===name) || {}; }
+  function pd(name, opts){
+    const m = findPd(name);
+    return Object.assign({
+      name: name, kind:"pd-mentor",
+      city: m.city || "", img: m.img || null, profile: m.profile || null,
+      bio: m.bio || "", tags: m.tags || []
+    }, opts||{});
+  }
+
+  // ===== FELLOW SUB-TREES =====
+  const cuzalinaFellows = [
+    {name:"Austin M. Kluis, MD",          kind:"fellow", year:"2026", note:"Incoming · LFPR proposer", gold:true},
+    {name:"Sacha Clark, DDS, MD",          kind:"fellow", year:"2025", note:"2025 match"},
+    {name:"Pasha Mostofi, MD, DMD",        kind:"fellow", year:"2024", note:"Current TSA fellow · Woodinville, WA"},
+    {name:"Sebastian Gutierrez, MD",       kind:"fellow", year:"2022", note:"TSA staff"},
+    {name:"Chase Nelson, MD",              kind:"fellow", year:"2017", note:"TSA staff"},
+    {name:"Babak Moein, MD",               kind:"fellow", year:"2016", note:"Southern California"},
+    {name:"Pasquale Tolomeo, MD",          kind:"fellow", year:"2015", note:"Tulsa · FL · MA · ~2,000 cases"},
+    {name:"Landon D. McLain, MD, DMD",     kind:"fellow-pd", year:"2010", note:"→ Huntsville, AL · 1,400 fellowship cases", gold:true, profile:"profile-mclain"},
+    {name:"James R. Koehler, MD, DDS",     kind:"fellow-pd", year:"2012", note:"→ Fairhope, AL · NOW AACS PD himself", gold:true, profile:"profile-koehler",
+      children:[
+        {name:"Eastern Shore fellow", kind:"future", year:"2023", note:"Koehler's fellowship"},
+        {name:"Eastern Shore fellow", kind:"future", year:"2024", note:"Koehler's fellowship"},
+        {name:"Eastern Shore fellow", kind:"future", year:"2025", note:"Koehler's fellowship"}
+      ]
+    }
+  ];
+
+  // ===== DOCUMENTED LINEAGE CHAINS =====
+  // Cuzalina's nested fellows
+  const cuzalinaNode = pd("Angelo Cuzalina", {
+    kind:"fellow-pd", year:"early 1990s", note:"AACS fellowship in Abilene TX under Tobin", gold:true,
+    featured:true, sub:"Tulsa, OK · Past Pres AACS 2011-12, ABCS 2013, CSF 2016 · 18,000+ cases",
+    pastPres:"2011-12",
+    children: cuzalinaFellows
+  });
+
+  // Karlinsky's nested fellows
+  const karlinskyNode = pd("Victoria Karlinsky-Bellini", {
+    kind:"fellow-pd", year:"AACS fellowship", note:"Trained under Howard Tobin in Abilene, TX", gold:true,
+    featured:true, sub:"New York · Madame Chair, AACS Fellowships",
+    children:[
+      pd("Claudia Kim", {kind:"fellow-pd", year:"recent", note:"AACS fellowship at New Look New Life under Karlinsky", gold:true, sub:"DO NY College of Osteopathic Med · NYU Brooklyn GS"})
+    ]
+  });
+
+  // Haiavy node (the 3rd Tobin trainee)
+  const haiavyNode = pd("Jacob Haiavy", {
+    kind:"fellow-pd", year:"AACS fellowship", note:"Trained under Howard Tobin in Abilene, TX · Past Pres ABCS", gold:true,
+    sub:"Rancho Cucamonga, CA · Past Pres ABCS"
+  });
+
+  // === LANE SMITH = VERIFIED INDEPENDENT (academic plastic surgery pathway, not AACS-internal) ===
+  // Mayo Clinic PRS residency 1999-2001 + Stanford Facial PRS fellowship 1993-94 · 4× board-certified
+  // Documented mentor of Chad Deal (Las Vegas, 800+ cases)
+
+  // === BRANMAN — tentative descendant of Tobin (timing + Fellowship-Committee-chair role) ===
+  const branmanUnderTobin = {
+    name:"Rhys L. Branman, MD", kind:"fellow-pd",
+    sub:"Vanderbilt Med + Vanderbilt GS · AACS Fellowship class of 1998 · ABCS + AB Maxfac · ABCS Board Examiner",
+    note:"Vanderbilt-trained · AACS Fellowship 1998 (under AACS Fellowship Committee then chaired by Tobin) · specific preceptor not publicly named · placed under Tobin pending Phase 1 LFPR verification",
+    tentative:true,
+    children:[
+      Object.assign(pd("Sami A. Nizam II", {kind:"fellow-pd", year:"2013", note:"Now AACS PD himself · 650+ fellowship cases under Branman", gold:true, sub:"Montgomery, AL · Rutgers OMFS+MD · GS internship Newark"}),{
+        children:[
+          {name:"Alabama Surgical Arts fellow", kind:"future", year:"2025", note:"Nizam's fellowship"},
+          {name:"Alabama Surgical Arts fellow", kind:"future", year:"2026", note:"Nizam's fellowship"}
+        ]
+      })
+    ]
+  };
+
+  // === JACKSON — tentative descendant of Tobin (founding-era contemporary, AACS Pres 2002-03 followed Tobin's 1993-95) ===
+  const jacksonUnderTobin = {
+    name:"Robert F. Jackson, MD, FACS", kind:"fellow-pd",
+    sub:"AACS Pres 2002-03 · Indiana U Med · Miami Valley Hospital GS (Dayton, OH) · ABS + ACS",
+    note:"Past Pres AACS 2002-03 and ABCS · documented mentor of Lowery · AACS-internal training preceptor not publicly named · placed under Tobin (founding-era contemporary) pending Phase 1 LFPR verification",
+    pastPres:"2002-03",
+    tentative:true,
+    children:[
+      pd("Chris Lowery", {kind:"fellow-pd", year:"2009", note:"AACS fellowship under Jackson", gold:true, sub:"Noblesville, IN · DO Kansas City COM · Grandview GS Chief Resident 2004-05", pastPres:"2019-20"})
+    ]
+  };
+
+  // === Howard Tobin = CONVERGENCE NODE — the documented and tentative origin of nearly all AACS-internal lineage ===
+  // FOUNDING MEMBER of AACS · chaired the AACS Fellowship Committee at its inception
+  // Pre-AACS institutional upstream: Baylor ENT residency (1966-69) + UC Cincinnati ENT (1971-72)
+  // VERIFIED trainees: Cuzalina, Karlinsky-Bellini, Haiavy
+  // TENTATIVE descendants (AACS Fellowship Committee era · specific preceptor not publicly named): Branman (1998), Jackson (2002-03 era)
+  const tobinChain = {
+    name:"Howard A. Tobin, MD, FACS", kind:"founder",
+    sub:"AACS FOUNDING MEMBER · Pres 1993-95 · Baylor + UC Cincinnati ENT · Abilene, TX",
+    note:"Founding member of the AACS · chaired the AACS Fellowship Committee at its inception · documented mentor of Cuzalina, Karlinsky-Bellini, and Haiavy · placed-under tentatively: Branman + Jackson",
+    pastPres:"1993-95",
+    children:[ cuzalinaNode, karlinskyNode, haiavyNode, branmanUnderTobin, jacksonUnderTobin ]
+  };
+
+  // === Lane Smith → Chad Deal chain ===
+  // Lane Smith: Mayo Clinic PRS residency 1999-2001 + Stanford Facial PRS fellowship 1993-94 (institutional upstream)
+  // Documented mentor of Chad Deal (Las Vegas fellowship · 800+ cases)
+  const laneSmithChain = {
+    name:"Lane F. Smith, MD", kind:"founder",
+    sub:"Smith Plastic Surgery · Las Vegas · Mayo PRS 1999-2001 · Stanford Facial PRS 1993-94 · 4× board-certified",
+    note:"Documented mentor of Chad Deal · Las Vegas cosmetic surgery fellowship (800+ cases)",
+    children:[
+      pd("Chad Deal", {
+        kind:"fellow-pd", year:"~2010", note:"Las Vegas fellowship under Lane Smith · 800+ cases", gold:true,
+        featured:true, sub:"Chattanooga, TN · Southern Surgical Arts · ABS+ABCS+ABFCS triple-board",
+        children:[
+          pd("Talon Maningas", {kind:"fellow-pd", year:"~2015", note:"1,200+ cases under Deal + Nease at Southern Surgical Arts", gold:true, sub:"Joplin, MO · DO · OSU+Freeman ENT+Facial PRS"}),
+          pd("Andrew Ray", {kind:"fellow-pd", year:"recent", note:"AACS fellowship Southern Surgical Arts under Deal + Nease", gold:true, sub:"Chattanooga, TN · DO · GS Pontiac MI"})
+        ]
+      })
+    ]
+  };
+
+  // Carey Nease: separate chain — Facial Plastic & Cosmetic fellowship in Little Rock (mentor not publicly named); now co-PD at Southern Surgical Arts alongside Deal.
+  // Until that mentor is publicly documented, Nease appears with Deal as a co-mentor in the same Southern Surgical Arts node — shown via the note on Maningas/Ray cards.
+  const neaseChain = {
+    name:"Carey D. Nease, MD", kind:"founder",
+    sub:"Co-PD, Southern Surgical Arts · U. Florida Med 1990-98 · ENT residency Oklahoma City · Facial Plastic & Cosmetic Surgery fellowship Little Rock, AR · ABCS + ABFPRS + ABOTO triple-board",
+    note:"Co-mentor of Maningas & Ray (alongside Chad Deal) at Southern Surgical Arts AACS fellowship · Little Rock fellowship mentor not publicly documented"
+  };
+
+  // ===== OTHER ACTIVE AACS PDs (no AACS-internal mentor documented in our dataset) =====
+  const linkedNames = new Set([
+    "Angelo Cuzalina","James R. Koehler","Landon D. McLain",
+    "Sami A. Nizam II","Victoria Karlinsky-Bellini","Claudia Kim",
+    "Chad Deal","Carey D. Nease","Talon Maningas","Andrew Ray",
+    "Jacob Haiavy","Chris Lowery"
+  ]);
+  const otherPDs = PD.filter(p=>!linkedNames.has(p.n)).sort((a,b)=>a.n.localeCompare(b.n));
+
+  // AACS Past Presidents — official chronological roster from cosmeticsurgery.org/past-presidents
+  const PAST_PRES = {
+    "Lisa Chipps":"2025-26",
+    "Mark K. Mandell-Brown":"2020-22",
+    "Mark Mandell-Brown":"2020-22",
+    "J. Kevin Duplechain":"2022-23",
+    "Alex Sobel":"2023-24"
+    // Others (Mo Banki, Obagi, Kluska, Shumway, Will, Petro, Sadick, Edds, Berman, McMenamin, Hopping,
+    //         Lack, Gilmore, Crockett, Hanke, Taylor, Monheit, Dedo, Waite, Beeson, Castillo, Dolsky,
+    //         Alt, Caleel, Newman, Webster) are listed in the Past Presidents Timeline section below.
+  };
+
+  const otherBranch = {
+    name:"Other AACS Program Directors", kind:"others",
+    sub:`n=${otherPDs.length} · mentor lineage publicly undocumented at this time`,
+    note:"Every PD has a mentor — the LFPR's Phase 1 alumni capture documents these chains formally. See Origins Table below for verified pre-fellowship credentials. AACS Past Presidents flagged with gold tag.",
+    children: otherPDs.map(p=>pd(p.n,{kind:"pd-other", sub:p.bio, pastPres:PAST_PRES[p.n]||null}))
+  };
+
+  // ===== ASSEMBLE FULL TREE =====
+  // Webster is the founding-era trunk node. Tobin sits next to him as the documented
+  // convergence node from which 3 of the most prominent modern lineages descend.
+  const data = {
+    name:"AACS", kind:"root",
+    sub:"American Academy of Cosmetic Surgery",
+    note:"Founded 1985 · Richard Webster, MD — 1st President (1985–87)",
+    children:[
+      // === FOUNDING ERA — direct children of AACS root ===
+      {
+        name:"Richard C. Webster, MD", kind:"founder",
+        sub:"AACS Founding President 1985-87 · \"Father of cosmetic surgery\"",
+        note:"Architect of the multi-specialty AACS model. Webster Award named in his honor.",
+        pastPres:"1985-87"
+      },
+      // Howard Tobin = central convergence node — founding member of AACS, chaired Fellowship Committee at inception
+      // Tobin's documented + tentative descendants: Cuzalina, Karlinsky, Haiavy, Branman (+ Nizam below), Jackson (+ Lowery below)
+      tobinChain,
+      // Lane Smith — VERIFIED INDEPENDENT pathway (Mayo PRS + Stanford Facial PRS) → trained Chad Deal
+      laneSmithChain,
+      // Carey Nease — Co-mentor at Southern Surgical Arts. Little Rock Facial PRS fellowship mentor not publicly documented (possibly Branman-era; placed as a peer of the Smith→Deal chain pending verification)
+      neaseChain,
+      // Everything else (collapsed group)
+      otherBranch
+    ]
+  };
+
+  // === D3 layout ===
+  const svgEl = document.getElementById("anc-svg"); if(!svgEl) return;
+  const svg = d3.select(svgEl);
+  svg.selectAll("*").remove();
+  const defs = svg.append("defs");
+  // clipPath for photo avatars (used per-node so we use individual ones)
+  // Arrowhead for overlay
+  defs.append("marker").attr("id","anc-arrow-end").attr("viewBox","0 -5 10 10")
+    .attr("refX",9).attr("refY",0).attr("markerWidth",6).attr("markerHeight",6).attr("orient","auto")
+    .append("path").attr("d","M0,-4L10,0L0,4Z").attr("fill","#C8A664");
+
+  const margin = {top:80, right:60, bottom:90, left:60};
+  const W = 1800, H = 1400;
+
+  ancZoomG = svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+  const linksG = ancZoomG.append("g").attr("class","links-g");
+  const overlayG = ancZoomG.append("g").attr("id","anc-overlay-g").attr("class","overlay-g");
+  const nodesG = ancZoomG.append("g").attr("class","nodes-g");
+
+  const root = d3.hierarchy(data);
+  root.x0 = (W - margin.left - margin.right) / 2;
+  root.y0 = 0;
+  ancRoot = root;
+
+  // Initial collapse logic — base form keeps Cuzalina + Koehler open so depth is obvious;
+  // every other fellow-pd starts collapsed (the "+" sign signals click-to-expand);
+  // "Other AACS PDs" group starts collapsed.
+  const ALWAYS_OPEN = new Set([
+    "Angelo Cuzalina",    // featured top-level mentor — full alumni grid visible on load
+    "James R. Koehler"    // 2nd-gen sub-tree — Eastern Shore fellows visible on load
+  ]);
+  root.descendants().forEach(d=>{
+    if(!d.children) return;
+    if(d.data.kind === "others") { d._children = d.children; d.children = null; }
+    else if(d.data.kind === "fellow-pd" && !ALWAYS_OPEN.has(d.data.name)) { d._children = d.children; d.children = null; }
+  });
+
+  // Tree layout — vertical (top-down). Generous spacing prevents label collisions.
+  const treeLayout = d3.tree().nodeSize([280, 210]); // [x-gap, y-gap]
+  // Text truncation helper — keeps long bios out of adjacent node lanes
+  const truncTxt = (s, n)=> {
+    if(!s) return "";
+    if(s.length <= n) return s;
+    return s.slice(0, n-1).replace(/[\s·,]+$/,"") + "…";
+  };
+
+  function diagonal(s, t){
+    return `M ${s.x},${s.y}
+            C ${s.x},${(s.y + t.y)/2}
+              ${t.x},${(s.y + t.y)/2}
+              ${t.x},${t.y}`;
+  }
+
+  function colorFor(d){
+    const k = d.data.kind;
+    if(k==="root")        return "#0A1F44";
+    if(k==="founder")     return "#14306B";
+    if(k==="co-mentor")   return "#14306B";
+    if(k==="pd-mentor")   return "#0A1F44";
+    if(k==="fellow-pd")   return "#C8A664";       // trainee who became PD (2nd-gen) — gold
+    if(k==="fellow")      return "#0E9F8E";       // documented fellow (no PD title)
+    if(k==="future")      return "#FBFAF5";       // future / projected slot
+    if(k==="pd-other")    return "#9AA7C2";       // PD with no documented AACS-internal lineage
+    if(k==="others")      return "#6F7F9C";       // group node for "Other AACS PDs"
+    if(k==="subfellow")   return "#C8A664";
+    return "#9AA7C2";
+  }
+  function radiusFor(d){
+    const k = d.data.kind;
+    if(k==="root")      return 34;
+    if(k==="founder")   return 17;
+    if(k==="co-mentor") return 18;
+    if(k==="pd-mentor") return d.data.featured ? 22 : 18;
+    if(k==="fellow-pd") return 12;
+    if(k==="fellow")    return 8;
+    if(k==="future")    return 5;
+    if(k==="pd-other")  return 10;
+    if(k==="others")    return 20;
+    if(k==="subfellow") return 5;
+    return 7;
+  }
+
+  function update(source){
+    treeLayout(root);
+    const nodes = root.descendants();
+    const links = root.links();
+
+    // shift x so root is centered horizontally in viewBox
+    const xs = nodes.map(n=>n.x);
+    const minX = Math.min(...xs), maxX = Math.max(...xs);
+    const totalW = maxX - minX;
+    const targetWidth = W - margin.left - margin.right;
+    const offset = (targetWidth/2) - (minX + totalW/2);
+    nodes.forEach(n=>{ n.x = n.x + offset; });
+
+    // === LINKS
+    const link = linksG.selectAll("path.anc-link").data(links, d=>d.target.id||(d.target.id=Math.random()));
+    link.enter().append("path").attr("class", d=>{
+      const t = d.target.data.kind;
+      return "anc-link" + (t==="cat"?" cat":(t==="subcat"?" subcat":""));
+    })
+    .attr("stroke-dasharray", d=> d.target.data.tentative ? "6 5" : null)
+    .attr("stroke", d=> d.target.data.tentative ? "#C8A664" : null)
+    .attr("stroke-opacity", d=> d.target.data.tentative ? .6 : null)
+    .attr("d", d=>{
+      const o = {x: source.x0||source.x, y: source.y0||source.y};
+      return diagonal(o, o);
+    }).merge(link).transition().duration(420)
+      .attr("d", d=>diagonal(d.source, d.target));
+    link.exit().transition().duration(420)
+      .attr("d", d=>{ const o={x:source.x,y:source.y}; return diagonal(o,o); }).remove();
+
+    // === NODES
+    const node = nodesG.selectAll("g.anc-node").data(nodes, d=>d.id||(d.id=Math.random()));
+    const nodeEnter = node.enter().append("g")
+      .attr("class", d=> "anc-node" + (d._children?" collapsed":""))
+      .attr("transform", d=>`translate(${source.x0||source.x},${source.y0||source.y})`)
+      .on("click",(e,d)=>{
+        if(d.data.kind==="pd" && d.data.profile && !d._children && !d.children){
+          // PD with no fellows — go to profile
+          showView(d.data.profile); return;
+        }
+        if(d.children){ d._children = d.children; d.children = null; }
+        else if(d._children){ d.children = d._children; d._children = null; }
+        update(d);
+        if(d.data.kind==="pd" && d.data.profile && d.depth>0){
+          // double-click pattern: hold profile link on click of label only — kept simple here
+        }
+      });
+
+    // Background circle
+    nodeEnter.append("circle").attr("class","bg")
+      .attr("r",1e-6).attr("fill",d=>colorFor(d))
+      .attr("stroke", d=>{
+        if(d.data.kind==="future") return "#C8A664";
+        if(d.data.kind==="root"||d.data.kind==="founder"||d.data.kind==="fellow-pd"||d.data.featured) return "#C8A664";
+        if(d.data.gold) return "#8A7028";
+        return "#fff";
+      })
+      .attr("stroke-width", d=>{
+        if(d.data.kind==="root") return 3;
+        if(d.data.kind==="founder"||d.data.kind==="fellow-pd"||d.data.featured) return 3;
+        return 2;
+      })
+      .attr("stroke-dasharray", d=>d.data.kind==="future"?"3 2":null);
+
+    // Photo image (PDs with img)
+    nodeEnter.filter(d=>(d.data.kind==="pd-mentor"||d.data.kind==="pd-other"||d.data.kind==="fellow-pd") && d.data.img).each(function(d){
+      const r = radiusFor(d) - 2;
+      const clipId = "clip-" + (d.id||Math.random()).toString().replace(/\W/g,"");
+      d.__clipId = clipId;
+      d3.select(this).append("clipPath").attr("id",clipId)
+        .append("circle").attr("r",r);
+      d3.select(this).append("image").attr("class","av")
+        .attr("xlink:href",d.data.img).attr("href",d.data.img)
+        .attr("x",-r).attr("y",-r).attr("width",2*r).attr("height",2*r)
+        .attr("clip-path","url(#"+clipId+")")
+        .attr("preserveAspectRatio","xMidYMid slice");
+    });
+
+    // Helper: shorten name "First M. Last, MD, DDS" → "F. Last"
+    function shortName(n){
+      const clean = n.replace(/,.*$/, "").trim();
+      const parts = clean.split(/\s+/);
+      if(parts.length === 1) return parts[0];
+      // Take first initial + last word
+      const first = parts[0];
+      const last  = parts[parts.length-1];
+      // For hyphenated or two-word last names like "Karlinsky-Bellini" or "Mandell-Brown", keep them intact
+      return first[0] + ". " + last;
+    }
+
+    // Main label — name only (no credentials), short-form to fit lane width
+    nodeEnter.append("text").attr("class","lbl")
+      .attr("text-anchor","middle")
+      .attr("y", d=> radiusFor(d) + 14)
+      .text(d=>{
+        if(d.data.kind==="root") return "";
+        if(d.data.kind==="future") return ""; // tag will carry the label
+        if(d.data.kind==="others") return truncTxt(d.data.name, 30);
+        return shortName(d.data.name); // F. Last form for all surgeon nodes
+      });
+
+    // ROOT special label
+    nodeEnter.filter(d=>d.data.kind==="root")
+      .append("text").attr("text-anchor","middle").attr("y",-2)
+      .style("font-family","'Cormorant Garamond',serif").style("font-size","20px").style("font-weight",700).style("fill","#FCFAF3")
+      .text("AACS");
+    nodeEnter.filter(d=>d.data.kind==="root")
+      .append("text").attr("text-anchor","middle").attr("y",14)
+      .style("font-family","Inter, sans-serif").style("font-size","8.5px").style("font-weight",600).style("fill","#C8A664").style("letter-spacing",".1em")
+      .text("1985");
+
+    // Sub-label line 1 — city or descriptor (sits directly under name), truncated to fit lane width
+    nodeEnter.append("text").attr("class","sub")
+      .attr("text-anchor","middle")
+      .attr("y", d=> radiusFor(d) + 28)
+      .text(d=>{
+        if(d.data.kind==="root") return "";
+        let raw = "";
+        if(d.data.kind==="pd-mentor"||d.data.kind==="pd-other") raw = d.data.city || "";
+        else if(d.data.kind==="fellow-pd") raw = d.data.city || "";
+        else if(d.data.kind==="founder"||d.data.kind==="co-mentor") raw = d.data.sub || "";
+        else if(d.data.kind==="others") raw = d.data.sub || "";
+        // Cap at ~34 chars — full bio remains in tooltip
+        return truncTxt(raw, 34);
+      });
+
+    // Sub-label line 2 — year for fellows / future. Suppressed for fellow-pd that already shows AACS PRES tag.
+    nodeEnter.filter(d=>d.data.kind==="fellow"||d.data.kind==="fellow-pd"||d.data.kind==="future"||d.data.kind==="subfellow")
+      .append("text").attr("class","tag")
+      .attr("text-anchor","middle")
+      .attr("y", d=>{
+        if(d.data.kind==="future") return -radiusFor(d) - 8;
+        if(d.data.kind==="fellow-pd") return radiusFor(d) + 42; // below the city, more breathing room
+        if(d.data.kind==="fellow"||d.data.kind==="subfellow") return radiusFor(d) + 26;
+        return radiusFor(d) + 42;
+      })
+      .text(d=>{
+        if(d.data.kind==="future") return d.data.year + " · projected slot";
+        // For fellow-pd, only show year if not redundant with the AACS PRES tag above
+        if(d.data.kind==="fellow-pd" && d.data.pastPres) return ""; // pastPres tag handles era
+        return d.data.year || "";
+      });
+
+    // For fellow-pd (trainee who became a PD), ★ NOW PD badge ABOVE the node
+    nodeEnter.filter(d=>d.data.kind==="fellow-pd")
+      .append("text").attr("text-anchor","middle")
+      .attr("y", d=> -radiusFor(d) - 8)
+      .style("font-family","'JetBrains Mono',monospace").style("font-size","7.5px").style("font-weight",800).style("fill","#8A7028").style("letter-spacing",".12em")
+      .text("★ NOW PD");
+
+    // Past President badge — appears above the city for those who served
+    nodeEnter.filter(d=>d.data.pastPres)
+      .append("text").attr("text-anchor","middle")
+      .attr("y", d=>{
+        // for fellow-pd push it above star badge; for pd-mentor / pd-other push above the photo
+        if(d.data.kind==="fellow-pd") return -radiusFor(d) - 20;
+        return -radiusFor(d) - 8;
+      })
+      .style("font-family","'JetBrains Mono',monospace").style("font-size","7.5px").style("font-weight",800).style("fill","#C8A664").style("letter-spacing",".12em")
+      .text(d=>"AACS PRES " + (d.data.pastPres||""));
+
+    // Expand/collapse indicator (+ / − inside circle)
+    nodeEnter.filter(d=>d.children||d._children).append("text")
+      .attr("class","tag toggle").attr("text-anchor","middle").attr("dy",3)
+      .style("font-size","11px").style("fill","#FCFAF3").style("font-weight",700)
+      .text(d=>d._children?"+":"−");
+
+    // ENTER + UPDATE — transition to layout positions
+    const nodeUpdate = nodeEnter.merge(node);
+    nodeUpdate.transition().duration(420)
+      .attr("transform", d=>`translate(${d.x},${d.y})`)
+      .attr("class", d=> "anc-node" + (d._children?" collapsed":""));
+    nodeUpdate.select("circle.bg").transition().duration(420).attr("r", d=>radiusFor(d));
+    // Update toggle indicator
+    nodeUpdate.selectAll("text.toggle").text(d=>d._children?"+":(d.children?"−":""));
+
+    // EXIT
+    const nodeExit = node.exit().transition().duration(420)
+      .attr("transform", d=>`translate(${source.x},${source.y})`)
+      .remove();
+    nodeExit.select("circle.bg").attr("r",1e-6);
+
+    // store positions for next transition
+    nodes.forEach(d=>{ d.x0=d.x; d.y0=d.y; });
+
+    // === OVERLAY (cross-branch mentor lineage)
+    redrawOverlay(nodes);
+
+    // === Tooltip
+    nodeUpdate.on("mousemove", showTip).on("mouseleave",()=>tip.style("opacity",0));
+    nodeUpdate.on("touchstart", showTip);
+  }
+  ancUpdate = update;
+
+  // === Overlay arrows for cross-branch mentor lineage ===
+  // Only draw between nodes that are currently visible (in the laid-out 'nodes' set)
+  const OVERLAY_LINKS = [
+    // [from-search-term, to-search-term, label]
+    ["Howard Tobin", "Jacob Haiavy", "trained"],
+    ["Robert F. Jackson", "Chris Lowery", "trained"],
+    ["Rhys L. Branman", "Sami A. Nizam II", "mentor"],
+    ["Victoria Karlinsky-Bellini", "Claudia Kim", "fellowship"],
+    ["Chad Deal", "Talon Maningas", "fellowship"],
+    ["Chad Deal", "Andrew Ray", "fellowship"],
+    ["Angelo Cuzalina", "James R. Koehler", "fellowship"],
+    ["Angelo Cuzalina", "Landon D. McLain", "fellowship"]
+  ];
+  function findNode(term, preferKind){
+    const matches = ancRoot.descendants().filter(d=>d.data.name && d.data.name.indexOf(term)>=0 && d.x!==undefined);
+    if(preferKind){
+      const m = matches.find(d=>d.data.kind===preferKind);
+      if(m) return m;
+    }
+    return matches[0];
+  }
+  function redrawOverlay(){
+    // Lineage is now the NATIVE structure of the tree — overlay arrows would be
+    // visual duplicates of the actual edges. Disabled in v7 lineage-focused mode.
+    overlayG.selectAll("*").remove();
+  }
+
+  // === Tooltip
+  const tip = d3.select("#tt-anc");
+  const host = document.getElementById("tree-host");
+  function showTip(e,d){
+    if(d.data.kind==="root") return;
+    const r = host.getBoundingClientRect();
+    const cx = e.clientX || (e.touches && e.touches[0].clientX) || (r.left + r.width/2);
+    const cy = e.clientY || (e.touches && e.touches[0].clientY) || (r.top + 80);
+    let title = d.data.name;
+    let body = "";
+    if(d.data.kind==="pd"){
+      body = `<em>${d.data.city||""}</em>${d.data.bio?'<em style="display:block;margin-top:.25rem">'+d.data.bio+'</em>':''}`;
+      if(d.data.profile) body += '<span class="ext">CLICK TO TOGGLE / OPEN PROFILE</span>';
+      else body += '<span class="ext">CLICK TO TOGGLE FELLOWS</span>';
+    } else if(d.data.kind==="founder"){
+      body = `<em>${d.data.sub||""}</em>${d.data.note?'<em style="display:block;margin-top:.25rem">'+d.data.note+'</em>':''}`;
+    } else if(d.data.kind==="cat"||d.data.kind==="subcat"){
+      body = `<em>${d.data.origin?'Origin category':''}</em><span class="ext">CLICK TO TOGGLE</span>`;
+    } else if(d.data.kind==="fellow"||d.data.kind==="subfellow"){
+      body = `<em>${d.data.note||""}${d.data.year?' · '+d.data.year:''}</em>`;
+    }
+    let left = cx - r.left + 14, top = cy - r.top + 12;
+    if(left > r.width - 260) left = Math.max(8, r.width - 260);
+    tip.style("opacity",1).html(`<strong>${title}</strong>${body}`)
+      .style("left", left+"px").style("top", top+"px");
+  }
+
+  // === Zoom
+  ancZoomBehavior = d3.zoom().scaleExtent([0.25,3])
+    .filter(e=>{
+      if(e.type==="touchstart"||e.type==="touchmove") return e.touches && e.touches.length>=2;
+      return (!e.ctrlKey || e.type==="wheel") && !e.button;
+    })
+    .on("zoom",(e)=>{
+      ancZoomG.attr("transform",`translate(${margin.left + e.transform.x},${margin.top + e.transform.y}) scale(${e.transform.k})`);
+    });
+  svg.call(ancZoomBehavior);
+
+  // First render
+  update(root);
+  // Auto-fit on first render — zoom out slightly so everything is in view
+  setTimeout(()=>{
+    const nodes = root.descendants();
+    if(!nodes.length) return;
+    const xs = nodes.map(n=>n.x), ys = nodes.map(n=>n.y);
+    const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+    const w = maxX-minX+100, h = maxY-minY+100;
+    const targetW = W-margin.left-margin.right, targetH = H-margin.top-margin.bottom;
+    const scale = Math.min(targetW/w, targetH/h, 1);
+    const tx = -minX*scale + (targetW - (maxX-minX)*scale)/2;
+    const ty = -minY*scale + 20;
+    svg.transition().duration(600).call(ancZoomBehavior.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+  }, 60);
 })();
 
 /* =====================================================================
